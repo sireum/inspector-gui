@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sireum.hamr.inspector.gui.modules.msc.MscTab">
+    <center>
+        <VBox>
+            <TableView fx:id="tableView" fixedCellSize="${controller.rowHeight}" VBox.vgrow="ALWAYS" stylesheets="@msc-tableview.css">
+                <columnResizePolicy>
+                    <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY"/>
+                </columnResizePolicy>
+            </TableView>
+        </VBox>
+    </center>
+   <top>
+       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+           <ComboBox fx:id="sessionComboBox" items="${controller.sessionNames}" promptText="Select Session"/>
+           <ComboBox fx:id="filterComboBox" items="${controller.filters}" promptText="Select Filter"/>
+       </ToolBar>
+   </top>
+</BorderPane>

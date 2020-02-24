@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.controlsfx.glyphfont.Glyph?>
+<?import org.sireum.hamr.inspector.gui.components.HorizontalSpacer?>
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sireum.hamr.inspector.gui.modules.console.ConsoleTab">
+    <center>
+        <VBox>
+            <children>
+                <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
+                    <columnResizePolicy>
+                        <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
+                    <columns>
+                        <TableColumn fx:id="uuidTableColumn" prefWidth="58" text="UUID" />
+                        <TableColumn fx:id="srcColumn" text="Source" >
+                            <columns>
+                                <TableColumn fx:id="srcBridgeColumn" prefWidth="125" text="Bridge" />
+                                <TableColumn fx:id="srcPortColumn" prefWidth="97" text="Port" />
+                                <TableColumn fx:id="srcDispatchProtocolColumn" prefWidth="135" text="Dispatch Protocol" />
+                                <TableColumn fx:id="srcPortModeColumn" prefWidth="89" text="Port Mode" />
+                            </columns>
+                        </TableColumn>
+                        <TableColumn fx:id="dataContentTableColumn" prefWidth="415" text="Data Content" />
+                        <TableColumn fx:id="dstColumn" text="Destination" >
+                            <columns>
+                                <TableColumn fx:id="dstBridgeColumn" prefWidth="125" text="Bridge" />
+                                <TableColumn fx:id="dstPortColumn" prefWidth="97" text="Port" />
+                                <TableColumn fx:id="dstDispatchProtocolColumn" prefWidth="135" text="Dispatch Protocol" />
+                                <TableColumn fx:id="dstPortModeColumn" prefWidth="89" text="Port Mode" />
+                            </columns>
+                        </TableColumn>
+                        <TableColumn fx:id="timestampTableColumn" prefWidth="135" text="Timestamp" />
+                    </columns>
+                </TableView>
+            </children>
+        </VBox>
+    </center>
+   <top>
+       <BorderPane>
+
+       </BorderPane>
+       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+           <ComboBox fx:id="sessionComboBox" items="${controller.sessionNames}" promptText="Select Session"/>
+           <ComboBox fx:id="filterComboBox" items="${controller.filters}" promptText="Select Filter" />
+           <HorizontalSpacer/>
+           <Button fx:id="visPropertyPaneTglBtn">
+               <graphic>
+                   <Glyph fontFamily="FontAwesome" icon="SLIDERS"/>
+               </graphic>
+           </Button>
+       </ToolBar>
+   </top>
+</BorderPane>

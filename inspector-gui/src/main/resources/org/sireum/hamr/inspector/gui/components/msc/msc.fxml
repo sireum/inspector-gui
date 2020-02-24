@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+<TableView xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+           fx:controller="org.sireum.hamr.inspector.gui.components.msc.Msc"
+           fx:id="tableView"
+           prefHeight="400.0"
+           prefWidth="600.0"
+           VBox.vgrow="ALWAYS"
+           fixedCellSize="${controller.rowHeight}"
+           stylesheets="@msc.css">
+    <columnResizePolicy>
+        <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY"/>
+    </columnResizePolicy>
+</TableView>

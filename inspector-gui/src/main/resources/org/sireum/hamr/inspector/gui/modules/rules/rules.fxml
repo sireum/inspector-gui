@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import org.controlsfx.control.MasterDetailPane?>
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="org.sireum.hamr.inspector.gui.modules.rules.RulesTab">
+    <top>
+        <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <ComboBox fx:id="sessionComboBox"
+                      onAction="#sessionChangeAction"
+                      converter="${controller.sessionStringConverter}"
+                      items="${controller.sessions}"
+                      promptText="Select Session"/>
+        </ToolBar>
+    </top>
+    <center>
+        <VBox>
+            <MasterDetailPane fx:id="masterDetailPane" detailSide="RIGHT" dividerPosition="0.38" VBox.vgrow="ALWAYS">
+                <masterNode>
+                    <VBox>
+                        <TableView fx:id="rulesView" rowFactory="${controller.rowFactory}" VBox.vgrow="ALWAYS">
+                            <columnResizePolicy>
+                                <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY" />
+                            </columnResizePolicy>
+                            <columns>
+                                <TableColumn text="Status"
+                                             cellFactory="${controller.ruleStatusCellFactory}"
+                                             cellValueFactory="${controller.ruleStatusCellValueFactory}"/>
+                                <TableColumn text="Name" prefWidth="200"
+                                             cellFactory="${controller.ruleNameCellFactory}"
+                                             cellValueFactory="${controller.ruleNameCellValueFactory}"/>
+                                <TableColumn text="Time" prefWidth="125"
+                                             cellFactory="${controller.ruleTimeCellFactory}"
+                                             cellValueFactory="${controller.ruleTimeCellValueFactory}"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </masterNode>
+                <detailNode>
+                    <VBox fx:id="detailNode">
+                        <children>
+                            <SplitPane orientation="VERTICAL" VBox.vgrow="ALWAYS">
+                                <ScrollPane hbarPolicy="NEVER" fitToWidth="true">
+                                    <Text fx:id="detailText" VBox.vgrow="SOMETIMES"/>
+                                </ScrollPane>
+                                <!-- JavaFx forces included controller ids to add "controller" to the end of includes -->
+                                <!-- So look for "mscViewController" in RulesTab.java -->
+                                <fx:include fx:id="mscView" source="../../components/msc/msc.fxml"/>
+                            </SplitPane>
+                        </children>
+                    </VBox>
+                </detailNode>
+            </MasterDetailPane>
+        </VBox>
+    </center>
+</BorderPane>

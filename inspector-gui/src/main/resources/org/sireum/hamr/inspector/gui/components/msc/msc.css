@@ -1,0 +1,31 @@
+.table-column {
+    /* changed at runtime by MscTab so that each column has its corresponding bridge color */
+    -bridge-color: black;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: -bridge-color;
+    -fx-font-weight: bold;
+}
+
+.scroll-pane {
+    -fx-background-color: inherit;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: inherit;
+}
+
+.table-cell {
+
+    /*
+     * See: https://gist.github.com/tmazeika/c90c03c645d18722ddb0 for default JavaFx stylesheet.
+     * Specifically: https://gist.github.com/tmazeika/c90c03c645d18722ddb0#file-caspian-css-L1285
+     *
+     * Using default colors is preferable to transparent when possible for performance reasons.
+     */
+    -fx-background-color:
+            linear-gradient(to right, -fx-background 0.495, -bridge-color 0.495, -bridge-color 0.505, -fx-background 0.505);
+
+    -fx-padding: -1 -1 -1 -1; /* prevents 1px lines in arrow drawings */
+}
