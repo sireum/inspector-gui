@@ -9,7 +9,8 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
-!generated/repo/org/sireum/art_2.12/0.1.0-SNAPSHOT/art_2.12-0.1.0-SNAPSHOT.jar
+!/generated/repo/org/sireum/art_2.12/0.1.0-SNAPSHOT/art_2.12-0.1.0-SNAPSHOT.jar
+!/repo/art_2.12-0.1.0-SNAPSHOT.jar
 
 ### STS ###
 .apt_generated
