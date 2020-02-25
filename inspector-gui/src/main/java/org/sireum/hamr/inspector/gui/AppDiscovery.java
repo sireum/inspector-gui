@@ -2,7 +2,6 @@ package org.sireum.hamr.inspector.gui;
 
 import javafx.collections.ObservableList;
 import lombok.extern.slf4j.Slf4j;
-import org.sireum.hamr.inspector.common.InspectionBlueprint;
 import org.sireum.hamr.inspector.common.Filter;
 import org.sireum.hamr.inspector.common.Injection;
 import org.sireum.hamr.inspector.common.Rule;
@@ -50,21 +49,6 @@ public class AppDiscovery {
     public ObservableList<Injection> injections() {
         final Injection[] injections = applicationContext.getBeansOfType(Injection.class).values().toArray(new Injection[0]);
         return unmodifiableObservableList(observableList(List.of(injections)));
-    }
-
-    @Bean(name = "inspectionBlueprint")
-    public InspectionBlueprint inspectionBlueprint() {
-        final var beans = applicationContext.getBeansOfType(InspectionBlueprint.class).values().toArray(new InspectionBlueprint[0]);
-
-        if (beans.length == 0) {
-            final String errorString = "Unable to discover art architecture. Please ensure an ArchitectureDescription is on the classpath.";
-            log.error(errorString);
-            System.exit(-1);
-        } else if (beans.length > 1) {
-            log.warn("Multiple ArchitectureDescriptions discovered on classpath! There should be one. Using {}", beans[0].ad().toString());
-        }
-
-        return beans[0];
     }
 
 }

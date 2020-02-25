@@ -9,8 +9,8 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
+import org.sireum.hamr.inspector.common.ArtUtils;
 import org.sireum.hamr.inspector.common.Msg;
-import org.sireum.hamr.inspector.gui.App;
 import org.sireum.hamr.inspector.services.MsgService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -29,6 +29,9 @@ class RuleTest {
 
     @Getter @Setter
     private MsgService msgService = null;
+
+    @Getter @Setter
+    private ArtUtils artUtils = null;
 
     @Getter @Setter
     private List<RuleTestJob> jobs;
@@ -55,7 +58,7 @@ class RuleTest {
                     // todo replace count and live-subscribe with replaySnapshop() method
                     final Mono<Long> msgCount = msgService.count(key);
                     final org.sireum.hamr.inspector.stream.Flux<Msg> input = org.sireum.hamr.inspector.stream.Flux.from(msgCount.flatMapMany(count -> msgService.replayThenLive(key).take(count)));
-                    final Flux<?> output = Flux.from(rule.rule(input, App.getArtUtils()));
+                    final Flux<?> output = Flux.from(rule.rule(input, artUtils));
 
                     output
                             .onErrorStop()

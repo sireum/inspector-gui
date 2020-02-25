@@ -1,21 +1,33 @@
 package org.sireum.hamr.inspector.gui;
 
+import art.Bridge;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TabPane;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.controlsfx.control.TaskProgressView;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.control.action.ActionUtils;
+import org.sireum.hamr.inspector.common.ArtUtils;
+import org.sireum.hamr.inspector.gui.gfx.Coloring;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 @ViewController
 @NoArgsConstructor @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection") // <-- protection for generated classes
 public class AppNode {
+
+    @Getter
+    @Autowired
+    private ArtUtils artUtils;
+
+    @Getter
+    @Autowired
+    private Coloring<Bridge> bridgeColoring;
 
     @Autowired
     @Qualifier("consoleTabAction")

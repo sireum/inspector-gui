@@ -40,6 +40,7 @@ import org.junit.platform.launcher.LauncherDiscoveryRequest;
 import org.junit.platform.launcher.core.LauncherConfig;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
+import org.sireum.hamr.inspector.common.ArtUtils;
 import org.sireum.hamr.inspector.services.MsgService;
 
 import java.io.File;
@@ -77,9 +78,11 @@ public class GenerateTestReportTask extends Task<Path> {
     private final String configurationParameterValue = Integer.toString(nextGenerateTestReportTaskCounter.getAndIncrement());
 
     final MsgService msgService;
+    final ArtUtils artUtils;
 
-    public GenerateTestReportTask(Collection<RuleTestJob> tests, MsgService msgService) {
+    public GenerateTestReportTask(Collection<RuleTestJob> tests, MsgService msgService, ArtUtils artUtils) {
         this.msgService = msgService;
+        this.artUtils = artUtils;
         jobs = Collections.unmodifiableList(List.copyOf(tests));
         checkRuleNameUniqueness();
     }

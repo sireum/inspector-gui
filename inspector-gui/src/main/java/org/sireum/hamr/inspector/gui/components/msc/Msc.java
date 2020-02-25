@@ -11,9 +11,11 @@ import javafx.scene.control.TableView;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.sireum.hamr.inspector.common.ArtUtils;
 import org.sireum.hamr.inspector.common.Msg;
-import org.sireum.hamr.inspector.gui.App;
 import org.sireum.hamr.inspector.gui.ViewController;
+import org.sireum.hamr.inspector.gui.gfx.Coloring;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j
 @ViewController
@@ -23,6 +25,14 @@ public final class Msc {
 
     static final double ROW_HEIGHT = 80.0;
     static final double COLUMN_WIDTH = 200.0;
+
+    @Getter
+    @Autowired
+    private ArtUtils artUtils;
+
+    @Getter
+    @Autowired
+    private Coloring<Bridge> bridgeColoring;
 
     @Getter
     private final double columnWidth = COLUMN_WIDTH;
@@ -75,19 +85,19 @@ public final class Msc {
 //    }
 
     private void initTableStructure() {
-        for (Bridge bridge : App.getArtUtils().getBridges()) {
-            final var column = new TableColumn<Msg, Msg>(App.getArtUtils().prettyPrint(bridge));
+        for (Bridge bridge : artUtils.getBridges()) {
+            final var column = new TableColumn<Msg, Msg>(artUtils.prettyPrint(bridge));
 
             column.setUserData(bridge); // user data MUST be set to bridge
             column.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue()));
-            column.setCellFactory(col -> new MscTableCell());
+            column.setCellFactory(col -> new MscTableCell(artUtils, bridgeColoring));
             column.setPrefWidth(columnWidth);
 
             column.setResizable(false);
             column.setReorderable(true);
             column.setEditable(false);
 
-            column.setStyle("-bridge-color: #" + App.getBridgeColoring().getRgbStringOf(bridge) + ";");
+            column.setStyle("-bridge-color: #" + bridgeColoring.getRgbStringOf(bridge) + ";");
 
             // if this is changed, must also remove the line: tableView.setSelectionModel(null) below.
             // see: https://stackoverflow.com/questions/27354085/disable-row-selection-in-tableview

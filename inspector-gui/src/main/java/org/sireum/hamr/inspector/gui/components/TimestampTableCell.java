@@ -2,8 +2,8 @@ package org.sireum.hamr.inspector.gui.components;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
+import org.sireum.hamr.inspector.common.ArtUtils;
 import org.sireum.hamr.inspector.common.Msg;
-import org.sireum.hamr.inspector.gui.App;
 
 /**
  * A cell which visualizes a Timestamp.
@@ -39,6 +39,6 @@ public class TimestampTableCell extends TableCell<Msg, Long> {
     }
 
     private static Label createTimestampLabel(Long timestamp) {
-        return new Label(App.getArtUtils().formatTime(timestamp));
+        return new Label(ArtUtils.formatTime(timestamp));
     }
 }

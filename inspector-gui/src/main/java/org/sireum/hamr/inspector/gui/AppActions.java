@@ -7,6 +7,7 @@ import javafx.scene.control.ChoiceDialog;
 import lombok.extern.slf4j.Slf4j;
 import org.controlsfx.control.Notifications;
 import org.controlsfx.control.action.Action;
+import org.sireum.hamr.inspector.common.ArtUtils;
 import org.sireum.hamr.inspector.common.Filter;
 import org.sireum.hamr.inspector.common.Injection;
 import org.sireum.hamr.inspector.common.Rule;
@@ -44,6 +45,8 @@ public class AppActions {
     private final MsgService msgService;
     private final InjectionService injectionService;
 
+    private final ArtUtils artUtils;
+
     private final ServiceBeans serviceBeans;
 
     private final ObservableList<Session> sessions;
@@ -59,7 +62,9 @@ public class AppActions {
                       @Qualifier("sessions") ObservableList<Session> sessions,
                       @Qualifier("rules") ObservableList<Rule> rules,
                       @Qualifier("filters") ObservableList<Filter> filters,
-                      @Qualifier("injections") ObservableList<Injection> injections, ServiceBeans serviceBeans) {
+                      @Qualifier("injections") ObservableList<Injection> injections,
+                      ServiceBeans serviceBeans,
+                      ArtUtils artUtils) {
         this.msgService = msgService;
         this.injectionService = injectionService;
         this.sessions = sessions;
@@ -68,6 +73,7 @@ public class AppActions {
         this.filters = filters;
         this.injections = injections;
         this.serviceBeans = serviceBeans;
+        this.artUtils = artUtils;
     }
 
     @Lazy @Bean(name = "refreshSessionsAction")
@@ -126,7 +132,7 @@ public class AppActions {
                         Flux.concat(loneTestCases, pairedCases).collectList().block(),
                         Collections::emptyList);
 
-            final var task = new GenerateTestReportTask(testCases, msgService);
+            final var task = new GenerateTestReportTask(testCases, msgService, artUtils);
 
             Notifications.create()
                     .title("Generate Test Report Task Created")

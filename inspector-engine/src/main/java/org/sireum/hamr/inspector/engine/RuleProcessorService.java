@@ -10,9 +10,9 @@ import javafx.beans.value.ObservableLongValue;
 import javafx.beans.value.ObservableObjectValue;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.sireum.hamr.inspector.common.ArtUtils;
 import org.sireum.hamr.inspector.common.Msg;
 import org.sireum.hamr.inspector.common.Rule;
-import org.sireum.hamr.inspector.gui.App;
 import org.sireum.hamr.inspector.gui.ThreadedOn;
 import org.sireum.hamr.inspector.services.MsgService;
 import org.sireum.hamr.inspector.services.RuleStatus;
@@ -35,9 +35,11 @@ import java.util.function.Function;
 public class RuleProcessorService {
 
     private final MsgService msgService;
+    private final ArtUtils artUtils;
 
-    public RuleProcessorService(MsgService msgService) {
+    public RuleProcessorService(MsgService msgService, ArtUtils artUtils) {
         this.msgService = msgService;
+        this.artUtils = artUtils;
     }
 
     private LoadingCache<Tuple2<Session, Rule>, ObservableObjectValue<RuleStatus>> CACHE;
@@ -75,7 +77,7 @@ public class RuleProcessorService {
                         final AtomicInteger y = new AtomicInteger(0);
                         final Mono<RuleStatus> ruleStatusMono = msgFlux
                                 .doOnNext(it -> x.incrementAndGet())
-                                .transformDeferred(flux -> rule.rule(org.sireum.hamr.inspector.stream.Flux.from(flux), App.getArtUtils()))
+                                .transformDeferred(flux -> rule.rule(org.sireum.hamr.inspector.stream.Flux.from(flux), artUtils))
                                 .materialize()
                                 .transform(HANDLE_LAST_SIGNAL)
                                 .takeLast(1)

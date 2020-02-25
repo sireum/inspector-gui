@@ -19,10 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.controlsfx.control.CheckTreeView;
 import org.controlsfx.control.PopOver;
 import org.jetbrains.annotations.NotNull;
+import org.sireum.hamr.inspector.common.ArtUtils;
 import org.sireum.hamr.inspector.common.Filter;
 import org.sireum.hamr.inspector.common.Msg;
 import org.sireum.hamr.inspector.gui.ViewController;
 import org.sireum.hamr.inspector.gui.components.*;
+import org.sireum.hamr.inspector.gui.gfx.Coloring;
 import org.sireum.hamr.inspector.gui.modules.DisposableTabController;
 import org.sireum.hamr.inspector.services.MsgService;
 import org.sireum.hamr.inspector.services.Session;
@@ -56,6 +58,15 @@ public final class ConsoleTab implements DisposableTabController {
     @Autowired
     @Qualifier("sessionNames")
     private ObservableList<String> sessionNames;
+
+    @Autowired
+    @Qualifier("artUtils")
+    private ArtUtils artUtils;
+
+    @Autowired
+    @Qualifier("bridgeColoring")
+    private Coloring<Bridge> bridgeColoring;
+
 
     @Autowired
     private MsgService dbService;
@@ -157,12 +168,12 @@ public final class ConsoleTab implements DisposableTabController {
 
         // factories for cell content (how cells are presented in the table)
         timestampTableColumn.setCellFactory(col -> new TimestampTableCell());
-        srcPortColumn.setCellFactory(col -> makeSrcBg(new PortTableCell()));
-        srcBridgeColumn.setCellFactory(col -> makeSrcBg(new BridgeTableCell()));
+        srcPortColumn.setCellFactory(col -> makeSrcBg(new PortTableCell(artUtils, bridgeColoring)));
+        srcBridgeColumn.setCellFactory(col -> makeSrcBg(new BridgeTableCell(artUtils, bridgeColoring)));
         srcDispatchProtocolColumn.setCellFactory(col -> makeSrcBg(new DispatchPropertyProtocolTableCell()));
         srcPortModeColumn.setCellFactory(col -> makeSrcBg(new PortModeTableCell()));
-        dstPortColumn.setCellFactory(col -> makeDstBg(new PortTableCell()));
-        dstBridgeColumn.setCellFactory(col -> makeDstBg(new BridgeTableCell()));
+        dstPortColumn.setCellFactory(col -> makeDstBg(new PortTableCell(artUtils, bridgeColoring)));
+        dstBridgeColumn.setCellFactory(col -> makeDstBg(new BridgeTableCell(artUtils, bridgeColoring)));
         dstDispatchProtocolColumn.setCellFactory(col -> makeDstBg(new DispatchPropertyProtocolTableCell()));
         dstPortModeColumn.setCellFactory(col -> makeDstBg(new PortModeTableCell()));
         dataContentTableColumn.setCellFactory(col -> new DataContentTableCell());

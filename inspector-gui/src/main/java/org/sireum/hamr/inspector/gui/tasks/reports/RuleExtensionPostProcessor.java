@@ -37,6 +37,7 @@ public class RuleExtensionPostProcessor implements TestInstancePostProcessor {
 
         // populate RuleTest's fields
         ruleTest.setMsgService(task.msgService);
+        ruleTest.setArtUtils(task.artUtils);
         ruleTest.setJobs(task.getJobs());
     }
 
