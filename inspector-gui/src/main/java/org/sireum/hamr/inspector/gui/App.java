@@ -10,12 +10,20 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sireum.hamr.inspector.common.ArchDiscovery;
 import org.sireum.hamr.inspector.common.ArtUtils;
+import org.sireum.hamr.inspector.engine.ServiceBeans;
 import org.sireum.hamr.inspector.gui.gfx.Coloring;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 
 @Slf4j
 @NoArgsConstructor
+@SpringBootApplication
+// can filter out AppDiscovery and ServiceBeans because they are imported by AppActions
+@ComponentScan(basePackages = { "org.sireum.hamr.inspector" },
+        excludeFilters = { @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = { AppDiscovery.class, ServiceBeans.class}) })
 public class App extends Application {
 
     public static final float COLOR_SCHEME_HUE_OFFSET = 0.05f;
@@ -34,7 +42,8 @@ public class App extends Application {
     public void init() throws Exception {
         log.info("Initializing spring context...");
         log.info("javafx.runtime.version: {}", System.getProperties().get("javafx.runtime.version"));
-        applicationContext = SpringApplication.run(AppDiscovery.class);
+//        applicationContext = SpringApplication.run(AppDiscovery.class);
+        applicationContext = SpringApplication.run(App.class);
         applicationContext.registerShutdownHook();
 
         final var arch = applicationContext.getBean(ArchDiscovery.class);

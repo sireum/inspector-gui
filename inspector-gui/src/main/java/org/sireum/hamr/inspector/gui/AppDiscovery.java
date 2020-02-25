@@ -6,10 +6,8 @@ import org.sireum.hamr.inspector.common.ArchDiscovery;
 import org.sireum.hamr.inspector.common.Filter;
 import org.sireum.hamr.inspector.common.Injection;
 import org.sireum.hamr.inspector.common.Rule;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 
 import java.util.List;
 
@@ -17,14 +15,14 @@ import static javafx.collections.FXCollections.observableList;
 import static javafx.collections.FXCollections.unmodifiableObservableList;
 
 @Slf4j
-@SpringBootApplication
-@ComponentScan(basePackages = {
-        "org.sireum.hamr.inspector.common",     // first discover the Arch
-        "org.sireum.hamr.inspector.services",   // then services
-        "org.sireum.hamr.inspector.engine",     // then engine which uses services
-        "org.sireum.hamr.inspector.gui",        // the gui which uses engine
-        "org.sireum.hamr.inspector"             // then anything else
-})
+//@SpringBootApplication
+//@ComponentScan(basePackages = {
+//        "org.sireum.hamr.inspector.common",     // first discover the Arch
+//        "org.sireum.hamr.inspector.services",   // then services
+//        "org.sireum.hamr.inspector.engine",     // then engine which uses services
+//        "org.sireum.hamr.inspector.gui",        // the gui which uses engine
+//        "org.sireum.hamr.inspector"             // then anything else
+//})
 public class AppDiscovery {
 
     private final ApplicationContext applicationContext;
