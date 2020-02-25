@@ -23,7 +23,6 @@ import org.sireum.hamr.inspector.services.Session;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
@@ -36,7 +35,7 @@ import java.util.Optional;
 
 @Lazy
 @Slf4j
-@Import({AppDiscovery.class, ServiceBeans.class})
+//@Import({AppDiscovery.class, ServiceBeans.class})
 @Configuration
 public class AppActions {
 

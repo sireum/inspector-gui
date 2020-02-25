@@ -56,8 +56,8 @@ public final class ConsoleTab implements DisposableTabController {
 
     @Getter
     @Autowired
-    @Qualifier("sessionNames")
-    private ObservableList<String> sessionNames;
+    @Qualifier("sessions")
+    private ObservableList<Session> sessions;
 
     @Autowired
     @Qualifier("artUtils")
@@ -179,8 +179,8 @@ public final class ConsoleTab implements DisposableTabController {
         dataContentTableColumn.setCellFactory(col -> new DataContentTableCell());
 
         currentSubscription = Bindings.createObjectBinding(() -> {
-            final var session = sessionComboBox.getValue();
-            final var filter = filterComboBox.getValue();
+            final Session session = sessionComboBox.getValue();
+            final Filter filter = filterComboBox.getValue();
 
             if (session != null && filter != null) {
                 return dbService.replayThenLive(session)

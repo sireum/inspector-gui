@@ -38,11 +38,8 @@
         </VBox>
     </center>
    <top>
-       <BorderPane>
-
-       </BorderPane>
        <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-           <ComboBox fx:id="sessionComboBox" items="${controller.sessionNames}" promptText="Select Session"/>
+           <ComboBox fx:id="sessionComboBox" items="${controller.sessions}" promptText="Select Session"/>
            <ComboBox fx:id="filterComboBox" items="${controller.filters}" promptText="Select Filter" />
            <HorizontalSpacer/>
            <Button fx:id="visPropertyPaneTglBtn">

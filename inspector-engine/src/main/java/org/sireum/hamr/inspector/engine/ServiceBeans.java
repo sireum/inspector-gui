@@ -2,8 +2,10 @@ package org.sireum.hamr.inspector.engine;
 
 import art.Bridge;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
+import javafx.collections.SetChangeListener;
 import lombok.extern.slf4j.Slf4j;
 import org.fxmisc.easybind.EasyBind;
 import org.sireum.hamr.inspector.common.ArtUtils;
@@ -34,16 +36,30 @@ public class ServiceBeans {
     @ThreadedOn(threadName = "fx")
     private final ObservableSet<Session> sessionsSet = observableSet();
 
+    @ThreadedOn(threadName = "fx")
+    private final ObservableList<Session> backingSessionsList = FXCollections.observableArrayList();
+
+    private final SetChangeListener<Session> sessionSetChangeListener = change -> {
+        if (change.wasAdded()) {
+            backingSessionsList.add(change.getElementAdded());
+        }
+        if (change.wasRemoved()) {
+            backingSessionsList.remove(change.getElementRemoved());
+        }
+    };
+
     @SuppressWarnings("FieldCanBeLocal")
     private Disposable subscribe = null;
 
     @PostConstruct
     private void postConstruct() {
         subscribe = sessionService.sessions()
-                .doOnNext(session -> Platform.runLater(() -> sessionsSet.add(session)))
-                .thenMany(sessionService.liveStatusUpdates()
-                        .doOnNext(flux -> Platform.runLater(() -> sessionsSet.add(flux.key()))))
+                .collectList()
+                .doOnNext(list -> Platform.runLater(() -> sessionsSet.addAll(list)))
+                .thenMany(sessionService.liveStatusUpdates().doOnNext(flux -> Platform.runLater(() -> sessionsSet.add(flux.key()))))
                 .subscribe();
+
+        sessionsSet.addListener(sessionSetChangeListener);
     }
 
     public ServiceBeans(SessionService sessionService, ArtUtils artUtils) {
@@ -54,7 +70,7 @@ public class ServiceBeans {
     @Bean(name = "sessions")
     @ThreadedOn(threadName = "fx")
     public ObservableList<Session> sessions() {
-        return unmodifiableObservableList(observableArrayList(sessionsSet)).sorted();
+        return unmodifiableObservableList(backingSessionsList).sorted();
     }
 
     @Bean(name = "sessionNames")
@@ -73,7 +89,11 @@ public class ServiceBeans {
     }
 
     public void refreshSessionsList() {
-        sessionService.sessions().subscribe(session -> Platform.runLater(() -> sessionsSet.add(session)));
+//        sessionService.sessions().subscribe(session -> Platform.runLater(() -> sessionsSet.add(session)));
+        sessionService.sessions()
+                .collectList()
+                .doOnNext(list -> Platform.runLater(() -> sessionsSet.addAll(list)))
+                .subscribe();
     }
 
 }

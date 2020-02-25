@@ -55,8 +55,8 @@ public final class MscTab implements DisposableTabController {
 
     @Getter
     @Autowired
-    @Qualifier("sessionNames")
-    private ObservableList<String> sessionNames;
+    @Qualifier("sessions")
+    private ObservableList<Session> sessions;
 
     @Autowired
     private MsgService dbService;
@@ -139,8 +139,8 @@ public final class MscTab implements DisposableTabController {
 
     private void initTableContent() {
         currentSubscription = Bindings.createObjectBinding(() -> {
-            final var session = sessionComboBox.getValue();
-            final var filter = filterComboBox.getValue();
+            final Session session = sessionComboBox.getValue();
+            final Filter filter = filterComboBox.getValue();
 
             if (session != null && filter != null) {
                 return dbService.replayThenLive(session)
