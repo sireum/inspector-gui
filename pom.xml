@@ -21,8 +21,8 @@
         <!-- name of the target HAMR project (packaged as a jar file)  -->
         <generated.repo>${project.basedir}/generated/repo</generated.repo>
 
-        <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>11</java.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <scala.version>2.12.7</scala.version>

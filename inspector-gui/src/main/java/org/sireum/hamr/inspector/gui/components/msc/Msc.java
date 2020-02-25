@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sireum.hamr.inspector.common.Msg;
-import org.sireum.hamr.inspector.gui.ArtUtil;
+import org.sireum.hamr.inspector.gui.App;
 import org.sireum.hamr.inspector.gui.ViewController;
 
 @Slf4j
@@ -75,8 +75,8 @@ public final class Msc {
 //    }
 
     private void initTableStructure() {
-        for (Bridge bridge : ArtUtil.getBridges()) {
-            final var column = new TableColumn<Msg, Msg>(ArtUtil.prettyPrint(bridge));
+        for (Bridge bridge : App.getArtUtils().getBridges()) {
+            final var column = new TableColumn<Msg, Msg>(App.getArtUtils().prettyPrint(bridge));
 
             column.setUserData(bridge); // user data MUST be set to bridge
             column.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue()));
@@ -87,7 +87,7 @@ public final class Msc {
             column.setReorderable(true);
             column.setEditable(false);
 
-            column.setStyle("-bridge-color: #" + ArtUtil.getBridgeColoring().getRgbStringOf(bridge) + ";");
+            column.setStyle("-bridge-color: #" + App.getBridgeColoring().getRgbStringOf(bridge) + ";");
 
             // if this is changed, must also remove the line: tableView.setSelectionModel(null) below.
             // see: https://stackoverflow.com/questions/27354085/disable-row-selection-in-tableview

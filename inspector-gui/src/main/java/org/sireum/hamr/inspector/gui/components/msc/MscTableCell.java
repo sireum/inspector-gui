@@ -16,7 +16,7 @@ import javafx.scene.text.TextFlow;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.sireum.hamr.inspector.common.Msg;
-import org.sireum.hamr.inspector.gui.ArtUtil;
+import org.sireum.hamr.inspector.gui.App;
 import org.sireum.hamr.inspector.gui.components.TextFlowFactory;
 
 import java.util.List;
@@ -74,28 +74,28 @@ public class MscTableCell extends TableCell<Msg, Msg> {
     private void setGraphicToCellType(Msg msg, CellType cellType) {
         if (cellType == CellType.R_HEAD) {
             final Polygon rightArrowHead = createRightArrowHead();
-            final String text = ArtUtil.prettyPrint(msg.dst());
-            final String tooltipText = ArtUtil.informativePrettyPrint(msg.dst());
+            final String text = App.getArtUtils().prettyPrint(msg.dst());
+            final String tooltipText = App.getArtUtils().informativePrettyPrint(msg.dst());
             setGraphicToLineTerminal(rightArrowHead, true, text, tooltipText, msg);
 
         } else if (cellType == CellType.L_HEAD) {
             final Polygon leftArrowHead = createLeftArrowHead();
-            final String text = ArtUtil.prettyPrint(msg.dst());
-            final String tooltipText = ArtUtil.informativePrettyPrint(msg.dst());
+            final String text = App.getArtUtils().prettyPrint(msg.dst());
+            final String tooltipText = App.getArtUtils().informativePrettyPrint(msg.dst());
             setGraphicToLineTerminal(leftArrowHead, false, text, tooltipText, msg);
 
         } else if (cellType == CellType.R_ORIGIN) {
             final Rectangle rect = createArrowLine(0.50);
             rect.setFill(Color.BLACK);
-            final String text = ArtUtil.prettyPrint(msg.dst());
-            final String tooltipText = ArtUtil.informativePrettyPrint(msg.src());
+            final String text = App.getArtUtils().prettyPrint(msg.dst());
+            final String tooltipText = App.getArtUtils().informativePrettyPrint(msg.src());
             setGraphicToLineTerminal(rect, true, text, tooltipText, msg);
 
         } else if (cellType == CellType.L_ORIGIN) {
             final Rectangle rect = createArrowLine(0.50);
             rect.setFill(Color.BLACK);
-            final String text = ArtUtil.prettyPrint(msg.dst());
-            final String tooltipText = ArtUtil.informativePrettyPrint(msg.src());
+            final String text = App.getArtUtils().prettyPrint(msg.dst());
+            final String tooltipText = App.getArtUtils().informativePrettyPrint(msg.src());
             setGraphicToLineTerminal(rect, false, text, tooltipText, msg);
 
         } else if (cellType == CellType.LINE) {
@@ -108,7 +108,7 @@ public class MscTableCell extends TableCell<Msg, Msg> {
     private void setGraphicToLineTerminal(Shape shape, boolean isRight, String text, String tooltipText, Msg msg) {
         final Pos shapePos;
         final Label label = new Label(text);
-        label.setTextFill(ArtUtil.getBridgeColoring().getColorOf(getBridge()));
+        label.setTextFill(App.getBridgeColoring().getColorOf(getBridge()));
 
         if (isRight) {
             shapePos = Pos.CENTER_LEFT;

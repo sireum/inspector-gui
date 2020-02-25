@@ -3,7 +3,7 @@ package org.sireum.hamr.inspector.gui.modules.rules;
 import javafx.scene.control.TableCell;
 import javafx.scene.text.TextAlignment;
 import lombok.extern.slf4j.Slf4j;
-import org.sireum.hamr.inspector.gui.ArtUtil;
+import org.sireum.hamr.inspector.common.ArtUtils;
 
 @Slf4j
 class RuleTimeCell extends TableCell<SessionRule, Long> {
@@ -19,7 +19,7 @@ class RuleTimeCell extends TableCell<SessionRule, Long> {
         if (item == null) {
             setText(null);
         } else {
-            setText(ArtUtil.formatTime(item));
+            setText(ArtUtils.formatTime(item));
         }
     }
 }

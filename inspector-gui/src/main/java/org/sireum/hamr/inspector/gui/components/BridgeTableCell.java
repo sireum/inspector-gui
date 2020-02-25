@@ -4,7 +4,7 @@ import art.Bridge;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import org.sireum.hamr.inspector.common.Msg;
-import org.sireum.hamr.inspector.gui.ArtUtil;
+import org.sireum.hamr.inspector.gui.App;
 
 /**
  * A cell which visualizes a {@link Bridge}.
@@ -22,8 +22,8 @@ public class BridgeTableCell extends TableCell<Msg, Bridge> {
     }
 
     private static Label createBridgeLabel(Bridge bridge) {
-        final var label = new Label(ArtUtil.prettyPrint(bridge));
-        final var color = ArtUtil.getBridgeColoring().getColorOf(bridge);
+        final var label = new Label(App.getArtUtils().prettyPrint(bridge));
+        final var color = App.getBridgeColoring().getColorOf(bridge);
         label.setTextFill(color);
         return label;
     }
