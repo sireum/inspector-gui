@@ -52,8 +52,8 @@ public class AppDiscovery {
         return unmodifiableObservableList(observableList(List.of(injections)));
     }
 
-    @Bean(name = "archDiscovery")
-    public InspectionBlueprint archDiscovery() {
+    @Bean(name = "inspectionBlueprint")
+    public InspectionBlueprint inspectionBlueprint() {
         final var beans = applicationContext.getBeansOfType(InspectionBlueprint.class).values().toArray(new InspectionBlueprint[0]);
 
         if (beans.length == 0) {

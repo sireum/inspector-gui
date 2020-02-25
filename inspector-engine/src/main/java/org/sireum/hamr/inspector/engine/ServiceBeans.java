@@ -1,6 +1,6 @@
 package org.sireum.hamr.inspector.engine;
 
-import com.sun.glass.ui.Application;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +35,9 @@ public class ServiceBeans {
     @PostConstruct
     private void postConstruct() {
         subscribe = sessionService.sessions()
-                .doOnNext(session -> Application.invokeLater(() -> sessionsSet.add(session)))
+                .doOnNext(session -> Platform.runLater(() -> sessionsSet.add(session)))
                 .thenMany(sessionService.liveStatusUpdates()
-                        .doOnNext(flux -> Application.invokeLater(() -> sessionsSet.add(flux.key()))))
+                        .doOnNext(flux -> Platform.runLater(() -> sessionsSet.add(flux.key()))))
                 .subscribe();
     }
 
@@ -52,7 +52,7 @@ public class ServiceBeans {
     }
 
     public void refreshSessionsList() {
-        sessionService.sessions().subscribe(session -> Application.invokeLater(() -> sessionsSet.add(session)));
+        sessionService.sessions().subscribe(session -> Platform.runLater(() -> sessionsSet.add(session)));
     }
 
     @Bean(name = "sessionNames")
