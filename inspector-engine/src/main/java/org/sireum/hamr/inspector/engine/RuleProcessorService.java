@@ -3,7 +3,7 @@ package org.sireum.hamr.inspector.engine;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import com.sun.glass.ui.Application;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableLongValue;
@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.sireum.hamr.inspector.common.Msg;
 import org.sireum.hamr.inspector.common.Rule;
+import org.sireum.hamr.inspector.gui.App;
 import org.sireum.hamr.inspector.gui.ThreadedOn;
 import org.sireum.hamr.inspector.services.MsgService;
 import org.sireum.hamr.inspector.services.RuleStatus;
@@ -74,7 +75,7 @@ public class RuleProcessorService {
                         final AtomicInteger y = new AtomicInteger(0);
                         final Mono<RuleStatus> ruleStatusMono = msgFlux
                                 .doOnNext(it -> x.incrementAndGet())
-                                .transformDeferred(flux -> rule.rule(org.sireum.hamr.inspector.stream.Flux.from(flux)))
+                                .transformDeferred(flux -> rule.rule(org.sireum.hamr.inspector.stream.Flux.from(flux), App.getArtUtils()))
                                 .materialize()
                                 .transform(HANDLE_LAST_SIGNAL)
                                 .takeLast(1)
@@ -99,7 +100,7 @@ public class RuleProcessorService {
 
                     })
                     .single()
-                    .doOnNext(t -> Application.invokeLater(() -> {
+                    .doOnNext(t -> Platform.runLater(() -> {
                         final List<Msg> msgs = t.getT2();
                         LAST_MSG_CACHE.setCachedTime(sessionRule, msgs);
                         if (!msgs.isEmpty()) {
@@ -117,7 +118,7 @@ public class RuleProcessorService {
                 final Disposable d = resultMono.subscribe(result -> {
                     log.info("rule {} session {} completed with status {}, invoking propertyUpdate later...",
                             rule.name(), session.getName(), result);
-                    Application.invokeLater(() -> {
+                    Platform.runLater(() -> {
                         log.info("javafx property has been updated to reflect rule {} session {} status of {}",
                                 rule.name(), session.getName(), result);
                         this.setValue(result);

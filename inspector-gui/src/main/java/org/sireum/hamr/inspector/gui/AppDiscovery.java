@@ -2,7 +2,7 @@ package org.sireum.hamr.inspector.gui;
 
 import javafx.collections.ObservableList;
 import lombok.extern.slf4j.Slf4j;
-import org.sireum.hamr.inspector.common.ArchDiscovery;
+import org.sireum.hamr.inspector.common.InspectionBlueprint;
 import org.sireum.hamr.inspector.common.Filter;
 import org.sireum.hamr.inspector.common.Injection;
 import org.sireum.hamr.inspector.common.Rule;
@@ -53,8 +53,8 @@ public class AppDiscovery {
     }
 
     @Bean(name = "archDiscovery")
-    public ArchDiscovery archDiscovery() {
-        final var beans = applicationContext.getBeansOfType(ArchDiscovery.class).values().toArray(new ArchDiscovery[0]);
+    public InspectionBlueprint archDiscovery() {
+        final var beans = applicationContext.getBeansOfType(InspectionBlueprint.class).values().toArray(new InspectionBlueprint[0]);
 
         if (beans.length == 0) {
             final String errorString = "Unable to discover art architecture. Please ensure an ArchitectureDescription is on the classpath.";
