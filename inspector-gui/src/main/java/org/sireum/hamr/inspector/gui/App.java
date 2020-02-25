@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.sireum.hamr.inspector.common.ArchDiscovery;
 import org.sireum.hamr.inspector.common.ArtUtils;
 import org.sireum.hamr.inspector.gui.gfx.Coloring;
 import org.springframework.boot.SpringApplication;
@@ -35,7 +36,9 @@ public class App extends Application {
         log.info("javafx.runtime.version: {}", System.getProperties().get("javafx.runtime.version"));
         applicationContext = SpringApplication.run(AppDiscovery.class);
         applicationContext.registerShutdownHook();
-        artUtils = applicationContext.getBean(ArtUtils.class);
+
+        final var arch = applicationContext.getBean(ArchDiscovery.class);
+        artUtils = new ArtUtils(arch);
         bridgeColoring = Coloring.ofUniformlyDistantColors(
                 artUtils.getBridges(),
                 COLOR_SCHEME_HUE_OFFSET,

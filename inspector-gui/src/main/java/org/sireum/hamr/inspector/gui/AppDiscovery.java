@@ -23,7 +23,7 @@ import static javafx.collections.FXCollections.unmodifiableObservableList;
         "org.sireum.hamr.inspector.services",   // then services
         "org.sireum.hamr.inspector.engine",     // then engine which uses services
         "org.sireum.hamr.inspector.gui",        // the gui which uses engine
-        "org.sireum.hamr.inspector",             // then anything else
+        "org.sireum.hamr.inspector"             // then anything else
 })
 public class AppDiscovery {
 
