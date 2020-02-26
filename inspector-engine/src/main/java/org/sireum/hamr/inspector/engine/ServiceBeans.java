@@ -20,7 +20,8 @@ import reactor.core.Disposable;
 
 import javax.annotation.PostConstruct;
 
-import static javafx.collections.FXCollections.*;
+import static javafx.collections.FXCollections.observableSet;
+import static javafx.collections.FXCollections.unmodifiableObservableList;
 import static org.sireum.hamr.inspector.gui.App.*;
 
 /**

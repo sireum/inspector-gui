@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.util.Objects;
+
 @Slf4j
 @NoArgsConstructor
 //@SpringBootApplication
@@ -21,21 +23,23 @@ public class App extends Application {
     public static final float COLOR_SCHEME_SATURATION = 0.85f;
     public static final float COLOR_SCHEME_BRIGHTNESS = 0.65f;
 
-    private ConfigurableApplicationContext applicationContext;
+    // set by InspectorApplication before init()
+    static volatile Class<?> inspectorBlueprintConfiguration = null;
+    static volatile String[] args = null;
+
+    // null during init, then has value on start
+    private volatile ConfigurableApplicationContext applicationContext;
 
     @Override
     public void init() throws Exception {
+        Objects.requireNonNull(inspectorBlueprintConfiguration, "Configuration must be set before launching");
+        Objects.requireNonNull(args, "Args must be set before launching");
         log.info("Initializing spring context...");
         log.info("javafx.runtime.version: {}", System.getProperties().get("javafx.runtime.version"));
-        applicationContext = SpringApplication.run(AppDiscovery.class);
+
+        final var configurationClasses = new Class<?>[] { inspectorBlueprintConfiguration, AppDiscovery.class };
+        applicationContext = SpringApplication.run(configurationClasses, args);
         applicationContext.registerShutdownHook();
-//        final var artUtils = applicationContext.getBean(ArtUtils.class);
-//        bridgeColoring = Coloring.ofUniformlyDistantColors(
-//                artUtils.getBridges(),
-//                COLOR_SCHEME_HUE_OFFSET,
-//                COLOR_SCHEME_SATURATION,
-//                COLOR_SCHEME_BRIGHTNESS
-//        );
     }
 
     @Override
@@ -60,5 +64,4 @@ public class App extends Application {
         applicationContext.close();
         Platform.exit();
     }
-
 }

@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
@@ -18,13 +19,14 @@ import static javafx.collections.FXCollections.unmodifiableObservableList;
 @Slf4j
 @SpringBootApplication
 @ComponentScan(basePackages = {
-        "org.sireum.hamr.inspector.capabilities",   // first discover the Arch
+        // at this point the InspectorBlueprint which provides the target hamr project has already been discovered
         "org.sireum.hamr.inspector.common",         // then apply to common for ArtUtils
         "org.sireum.hamr.inspector.services",       // then services
         "org.sireum.hamr.inspector.engine",         // then engine which uses services
         "org.sireum.hamr.inspector.gui",            // the gui which uses engine
         "org.sireum.hamr.inspector"                 // then anything else
 })
+@Configuration
 public class AppDiscovery {
 
     private final ApplicationContext applicationContext;

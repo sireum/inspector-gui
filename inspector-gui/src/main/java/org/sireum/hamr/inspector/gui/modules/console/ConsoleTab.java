@@ -185,7 +185,7 @@ public final class ConsoleTab implements DisposableTabController {
             if (session != null && filter != null) {
                 return dbService.replayThenLive(session)
                         .publishOn(Schedulers.parallel())
-                        .transformDeferred(flux -> filter.filter(Flux$.MODULE$.from(flux)))
+                        .transformDeferred(flux -> filter.filter(Flux$.MODULE$.from(flux), artUtils))
                         .bufferTimeout(64, Duration.ofMillis(100))
                         .publishOn(FxSchedulers.fxThread())
                         .subscribe(msgs -> {
