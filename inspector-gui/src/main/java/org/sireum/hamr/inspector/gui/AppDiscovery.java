@@ -36,7 +36,7 @@ public class AppDiscovery {
     }
 
     @Bean(name = "filters")
-    public ObservableList<Filter> capDefs() {
+    public ObservableList<Filter> filters() {
         final Filter[] filters = applicationContext.getBeansOfType(Filter.class).values().toArray(new Filter[0]);
         return unmodifiableObservableList(observableList(List.of(filters)));
     }
