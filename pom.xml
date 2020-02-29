@@ -8,32 +8,23 @@
     <parent>
         <groupId>com.github.MatthewWeisCaps</groupId>
         <artifactId>inspector-bom</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
 
     <groupId>org.sireum.hamr.inspector</groupId>
     <artifactId>inspector-gui</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.2-SNAPSHOT</version>
     <name>inspector-gui</name>
     <description>Inspector GUI</description>
 
     <properties>
-        <!-- name of the target HAMR project (packaged as a jar file)  -->
-        <generated.repo>${project.basedir}/generated/repo</generated.repo>
-
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <scala.version>2.12.7</scala.version>
     </properties>
 
     <repositories>
-        <repository>
-            <id>project.local.generated</id>
-            <name>generated</name>
-            <url>file:${generated.repo}</url>
-        </repository>
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
@@ -42,15 +33,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.sireum</groupId>
+            <groupId>org.sireum.runtime</groupId>
             <artifactId>library_2.12</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.sireum</groupId>
-            <artifactId>art_2.12</artifactId>
-            <scope>compile</scope>
+            <groupId>org.sireum.slang-embedded-art</groupId>
+            <artifactId>slang-embedded-art_2.12</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.github.MatthewWeisCaps</groupId>
             <artifactId>inspector-stream</artifactId>
@@ -67,7 +56,6 @@
             <groupId>com.github.MatthewWeisCaps</groupId>
             <artifactId>inspector-services-redis</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
@@ -97,13 +85,12 @@
             <artifactId>javafx-media</artifactId>
             <version>13</version>
         </dependency>
-
         <!-- would be runtime scope but want access to GlyphIcons class -->
         <dependency>
             <groupId>de.jensd</groupId>
             <artifactId>fontawesomefx-commons</artifactId>
             <version>9.1.2</version>
-            <!--            <scope>runtime</scope>-->
+<!--            <scope>runtime</scope>-->
         </dependency>
         <dependency>
             <groupId>de.jensd</groupId>
@@ -115,7 +102,6 @@
             <artifactId>fontawesomefx-materialdesignfont</artifactId>
             <version>2.0.26-9.1.2</version>
         </dependency>
-
         <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
@@ -127,69 +113,44 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
             <groupId>com.github.shadskii</groupId>
             <artifactId>reactorfx</artifactId>
             <version>2.0.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.fxmisc.easybind</groupId>
             <artifactId>easybind</artifactId>
             <version>1.0.3</version>
         </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
         </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-test</artifactId>-->
-<!--            &lt;!&ndash;            <scope>test</scope>&ndash;&gt;-->
-<!--            <exclusions>-->
-<!--                <exclusion>-->
-<!--                    <groupId>junit</groupId>-->
-<!--                    <artifactId>junit</artifactId>-->
-<!--                </exclusion>-->
-<!--                <exclusion>-->
-<!--                    <groupId>org.junit.vintage</groupId>-->
-<!--                    <artifactId>junit-vintage-engine</artifactId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-<!--            <version>5.5.2</version>-->
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-<!--            <version>5.5.2</version>-->
         </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
-<!--            <version>1.5.2</version>-->
         </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-engine</artifactId>
-<!--            <version>1.5.2</version>-->
         </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-runner</artifactId>
-<!--            <version>1.5.2</version>-->
         </dependency>
         <dependency>
             <groupId>io.qameta.allure</groupId>
@@ -223,23 +184,19 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
             <groupId>io.qameta.allure.plugins</groupId>
             <artifactId>junit-xml-plugin</artifactId>
             <version>2.13.0</version>
         </dependency>
-
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
         </dependency>
-
         <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-core</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -249,7 +206,6 @@
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
         </dependency>
-
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
@@ -322,29 +278,6 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>3.0.0-M1</version>
-                <executions>
-                    <execution>
-                        <id>install-art-jar</id>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <groupId>org.sireum</groupId>
-                            <artifactId>art_2.12</artifactId>
-                            <version>${art.version}</version>
-                            <file>${project.basedir}/repo/art_2.12-${art.version}.jar</file>
-                            <packaging>jar</packaging>
-                            <generatePom>true</generatePom>
-                            <localRepositoryPath>${generated.repo}</localRepositoryPath>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>3.0.0-M2</version>
                 <executions>
@@ -371,24 +304,6 @@
                                     <message>javafx dependency must come from inspector pom (not transitively from workbenchfx)</message>
                                     <searchTransitive>true</searchTransitive>
                                 </bannedDependencies>
-                            </rules>
-                            <fail>true</fail>
-                            <failFast>true</failFast>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>enforce-art-version</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <phase>validate</phase>
-                        <configuration>
-                            <rules>
-                                <requireSameVersions>
-                                    <dependencies>
-                                        <dependency>org.sireum.art_2.12</dependency>
-                                    </dependencies>
-                                </requireSameVersions>
                             </rules>
                             <fail>true</fail>
                             <failFast>true</failFast>
