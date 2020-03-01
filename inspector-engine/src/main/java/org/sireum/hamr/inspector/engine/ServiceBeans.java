@@ -54,13 +54,13 @@ public class ServiceBeans {
 
     @PostConstruct
     private void postConstruct() {
+        sessionsSet.addListener(sessionSetChangeListener);
+
         subscribe = sessionService.sessions()
                 .collectList()
                 .doOnNext(list -> Platform.runLater(() -> sessionsSet.addAll(list)))
                 .thenMany(sessionService.liveStatusUpdates().doOnNext(flux -> Platform.runLater(() -> sessionsSet.add(flux.key()))))
                 .subscribe();
-
-        sessionsSet.addListener(sessionSetChangeListener);
     }
 
     public ServiceBeans(SessionService sessionService, ArtUtils artUtils) {
@@ -91,9 +91,13 @@ public class ServiceBeans {
 
     public void refreshSessionsList() {
 //        sessionService.sessions().subscribe(session -> Platform.runLater(() -> sessionsSet.add(session)));
+
         sessionService.sessions()
                 .collectList()
-                .doOnNext(list -> Platform.runLater(() -> sessionsSet.addAll(list)))
+                .doOnNext(list -> Platform.runLater(() -> {
+                    sessionsSet.clear();
+                    sessionsSet.addAll(list);
+                }))
                 .subscribe();
     }
 
