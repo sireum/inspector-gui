@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sireum.hamr.inspector.gui.modules.arch.ArchTab">
+    <center>
+        <Pane fx:id="content">
+
+        </Pane>
+    </center>
+   <top>
+       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+<!--           <ComboBox fx:id="sessionComboBox" items="${controller.sessions}" promptText="Select Session"/>-->
+<!--           <ComboBox fx:id="filterComboBox" items="${controller.filters}" promptText="Select Filter" />-->
+           <CheckBox fx:id="showConnectionsCheckBox" text="Show All Connections"/>
+       </ToolBar>
+   </top>
+</BorderPane>

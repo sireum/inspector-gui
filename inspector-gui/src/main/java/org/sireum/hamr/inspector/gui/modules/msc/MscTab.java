@@ -1,11 +1,35 @@
+/*
+ * Copyright (c) 2020, Matthew Weis, Kansas State University
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.sireum.hamr.inspector.gui.modules.msc;
 
 import art.Bridge;
-import freetimelabs.io.reactorfx.schedulers.FxSchedulers;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -19,18 +43,16 @@ import org.sireum.hamr.inspector.common.ArtUtils;
 import org.sireum.hamr.inspector.common.Filter;
 import org.sireum.hamr.inspector.common.Msg;
 import org.sireum.hamr.inspector.gui.ViewController;
+import org.sireum.hamr.inspector.gui.collections.UnbackedObservableList;
 import org.sireum.hamr.inspector.gui.components.msc.MscTableCell;
 import org.sireum.hamr.inspector.gui.gfx.Coloring;
 import org.sireum.hamr.inspector.gui.modules.DisposableTabController;
 import org.sireum.hamr.inspector.services.MsgService;
 import org.sireum.hamr.inspector.services.Session;
-import org.sireum.hamr.inspector.stream.Flux$;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import reactor.core.Disposable;
-import reactor.core.scheduler.Schedulers;
 
-import java.time.Duration;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
@@ -59,7 +81,7 @@ public final class MscTab implements DisposableTabController {
     private ObservableList<Session> sessions;
 
     @Autowired
-    private MsgService dbService;
+    private MsgService msgService;
 
     @Autowired
     @Qualifier("artUtils")
@@ -80,16 +102,16 @@ public final class MscTab implements DisposableTabController {
 
     private final AtomicReference<Disposable> streamDisposable = new AtomicReference<>(null);
 
-    private final ChangeListener<Disposable> subscriptionChangeListener = (observable, oldValue, newValue) -> {
-        tableView.getItems().clear();
-        if (oldValue != null && !oldValue.isDisposed()) {
-            oldValue.dispose();
-        }
-        streamDisposable.getAndSet(newValue);
-    };
+//    private final ChangeListener<Disposable> subscriptionChangeListener = (observable, oldValue, newValue) -> {
+//        tableView.getItems().clear();
+//        if (oldValue != null && !oldValue.isDisposed()) {
+//            oldValue.dispose();
+//        }
+//        streamDisposable.getAndSet(newValue);
+//    };
 
     @SuppressWarnings("FieldCanBeLocal") // this property MUST be a field to avoid being GC'd as a weak reference
-    private ObjectBinding<Disposable> currentSubscription = null;
+    private ObjectBinding<ObservableList<Msg>> itemsBinding = null;
 
     @FXML
     protected void initialize() {
@@ -138,24 +160,17 @@ public final class MscTab implements DisposableTabController {
     }
 
     private void initTableContent() {
-        currentSubscription = Bindings.createObjectBinding(() -> {
+        itemsBinding = Bindings.createObjectBinding(() -> {
             final Session session = sessionComboBox.getValue();
             final Filter filter = filterComboBox.getValue();
 
             if (session != null && filter != null) {
-                return dbService.replayThenLive(session)
-                        .publishOn(Schedulers.parallel())
-                        .transformDeferred(flux -> filter.filter(Flux$.MODULE$.from(flux), artUtils))
-                        .bufferTimeout(64, Duration.ofMillis(100))
-                        .publishOn(FxSchedulers.fxThread())
-                        .subscribe(msgs -> {
-                            tableView.getItems().addAll(msgs);
-                        });
+                return new UnbackedObservableList(artUtils, msgService, session, filter);
+            } else {
+                return FXCollections.emptyObservableList();
             }
-
-            return null;
         }, sessionComboBox.valueProperty(), filterComboBox.valueProperty());
-        currentSubscription.addListener(subscriptionChangeListener);
+        tableView.itemsProperty().bind(itemsBinding);
     }
 
 }

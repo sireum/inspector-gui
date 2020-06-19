@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Circle?>
+<StackPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sireum.hamr.inspector.gui.components.port.PortComponent">
+   <children>
+      <Circle fx:id="circle" fill="#0000005a" onMouseClicked="#mouseClickAction" onMouseEntered="#mouseEnteredAction" radius="20.0" stroke="BLACK" strokeType="INSIDE" />
+<!--      <Line endY="20.0" strokeWidth="2.0" translateY="-5.0" mouseTransparent="true" />-->
+<!--      <TextFlow fx:id="dataTextFlow"/>-->
+   </children>
+
+</StackPane>

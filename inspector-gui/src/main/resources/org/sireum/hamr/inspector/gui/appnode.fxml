@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
 <?import org.controlsfx.control.TaskProgressView?>
+<?import org.sireum.hamr.inspector.gui.components.DockableTabPane?>
 <BorderPane prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sireum.hamr.inspector.gui.AppNode">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
@@ -12,6 +13,7 @@
             <items>
                   <Menu mnemonicParsing="false" text="New">
                     <items>
+                      <MenuItem fx:id="newArchTabMenuItem" mnemonicParsing="false" text="Arch" />
                       <MenuItem fx:id="newTableTabMenuItem" mnemonicParsing="false" text="Table" />
                       <MenuItem fx:id="newMscTabMenuItem" mnemonicParsing="false" text="Msc" />
                       <MenuItem fx:id="newRulesTabMenuItem" mnemonicParsing="false" text="Rules" />
@@ -31,11 +33,16 @@
       </MenuBar>
    </top>
    <center>
-      <TabPane fx:id="tabPane" tabClosingPolicy="ALL_TABS" BorderPane.alignment="CENTER">
-        <tabs>
-          <Tab text="Welcome" />
-        </tabs>
-      </TabPane>
+<!--      <SplitPane>-->
+<!--          <TabPane fx:id="rootTabPane" tabClosingPolicy="ALL_TABS" BorderPane.alignment="CENTER">-->
+<!--          <tabs>-->
+<!--              <Tab text="Welcome" />-->
+<!--          </tabs>-->
+<!--      </TabPane>-->
+<!--      </SplitPane>-->
+       <DockableTabPane fx:id="rootTabPane" BorderPane.alignment="CENTER">
+
+       </DockableTabPane>
    </center>
    <bottom>
       <TaskProgressView fx:id="taskProgressView" prefHeight="100.0" prefWidth="600.0" BorderPane.alignment="CENTER" />

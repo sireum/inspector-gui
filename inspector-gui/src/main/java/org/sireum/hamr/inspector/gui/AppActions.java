@@ -1,3 +1,28 @@
+/*
+ * Copyright (c) 2020, Matthew Weis, Kansas State University
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.sireum.hamr.inspector.gui;
 
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
@@ -12,6 +37,7 @@ import org.sireum.hamr.inspector.common.Filter;
 import org.sireum.hamr.inspector.common.Injection;
 import org.sireum.hamr.inspector.common.Rule;
 import org.sireum.hamr.inspector.engine.ServiceBeans;
+import org.sireum.hamr.inspector.gui.modules.arch.ArchTab;
 import org.sireum.hamr.inspector.gui.modules.console.ConsoleTab;
 import org.sireum.hamr.inspector.gui.modules.msc.MscTab;
 import org.sireum.hamr.inspector.gui.modules.rules.RulesTab;
@@ -78,7 +104,7 @@ public class AppActions {
     @Lazy @Bean(name = "refreshSessionsAction")
     public Action refreshSessionsAction() {
         return new Action("Refresh Sessions List", event -> {
-            log.debug("Refreshing sessions list.");
+            log.info("Refreshing sessions list.");
             serviceBeans.refreshSessionsList();
         });
     }
@@ -102,6 +128,11 @@ public class AppActions {
         });
     }
 
+    @Lazy @Bean(name = "archTabAction")
+    public Action archTabAction() {
+        return new Action("New Arch Tab", event -> appLoader.loadAndInsertTab("arch", ArchTab.class));
+    }
+
     @Lazy @Bean(name = "consoleTabAction")
     public Action consoleTabAction() {
         return new Action("New Console Tab", event -> appLoader.loadAndInsertTab("console", ConsoleTab.class));
@@ -116,6 +147,48 @@ public class AppActions {
     public Action rulesTabAction() {
         return new Action("New Rules Tab", event -> appLoader.loadAndInsertTab("rules", RulesTab.class));
     }
+
+//    /**
+//     *
+//     * Contract - any item that triggers this action should set their userData equal to the target tab
+//     *
+//     * @return
+//     */
+//    @Lazy @Bean(name = "splitTabVerticallyAction")
+//    public Action splitTabVerticallyAction() {
+//        return new Action("Split Vertically", event -> {
+//            if (event.getTarget() instanceof Node) {
+//                final Node node = (Node) event.getTarget();
+//                if (node.getUserData() instanceof Tab) {
+//                    final Tab tab = (Tab) node.getUserData();
+//                    final TabPane tabPane = tab.getTabPane();
+//
+//                    if (tabPane != null && tabPane.getTabs().contains(tab)) {
+//                        final Parent parent = tabPane.getParent();
+//
+//                        tabPane.getTabs().remove(tab);
+////                        parent.getChildrenUnmodifiable()
+//                    }
+//                } else {
+//                    log.warn("splitTabVerticallyAction requires that target nodes set userData to the target tab.");
+//                }
+//            }
+//            System.out.println(event); // todo write after debugging
+//        });
+//    }
+//
+//    /**
+//     *
+//     * Contract - any item that triggers this action should set their userData equal to the target tab
+//     *
+//     * @return
+//     */
+//    @Lazy @Bean(name = "splitTabHorizontallyAction")
+//    public Action splitTabHorizontallyAction() {
+//        return new Action("Split Horizontally", event -> {
+//            System.out.println(event); // todo write after debugging
+//        });
+//    }
 
     @Lazy @Bean(name = "generateTestReportAction")
     public Action generateTestReportAction() {

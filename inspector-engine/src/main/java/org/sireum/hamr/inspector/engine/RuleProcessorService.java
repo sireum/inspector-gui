@@ -1,3 +1,28 @@
+/*
+ * Copyright (c) 2020, Matthew Weis, Kansas State University
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.sireum.hamr.inspector.engine;
 
 import com.github.benmanes.caffeine.cache.Cache;
@@ -17,6 +42,7 @@ import org.sireum.hamr.inspector.gui.ThreadedOn;
 import org.sireum.hamr.inspector.services.MsgService;
 import org.sireum.hamr.inspector.services.RuleStatus;
 import org.sireum.hamr.inspector.services.Session;
+import org.springframework.data.domain.Range;
 import org.springframework.stereotype.Controller;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
@@ -27,7 +53,7 @@ import reactor.util.function.Tuple2;
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Function;
 
 @Slf4j
@@ -71,13 +97,13 @@ public class RuleProcessorService {
                                 }
                             });
 
-            final Mono<RuleStatus> resultMono = msgService.replayThenLive(session)
+            final Mono<RuleStatus> resultMono = msgService.live(session, Range.unbounded())
                     .publish(msgFlux -> {
-                        final AtomicInteger x = new AtomicInteger(0);
-                        final AtomicInteger y = new AtomicInteger(0);
+                        final LongAdder x = new LongAdder();
+                        final LongAdder y = new LongAdder();
                         final Mono<RuleStatus> ruleStatusMono = msgFlux
-                                .doOnNext(it -> x.incrementAndGet())
-                                .transformDeferred(flux -> rule.rule(org.sireum.hamr.inspector.stream.Flux.from(flux), artUtils))
+                                .doOnNext(it -> x.increment())
+                                .transformDeferred(flux -> rule.rule(org.sireum.hamr.inspector.stream.Flux.from(flux)))
                                 .materialize()
                                 .transform(HANDLE_LAST_SIGNAL)
                                 .takeLast(1)
@@ -85,7 +111,7 @@ public class RuleProcessorService {
 
                         // the publish method forces both fluxes to run in lockstep todo fix
                         final Mono<List<Msg>> lastMsgMono = msgFlux
-                                .doOnNext(it -> y.incrementAndGet())
+                                .doOnNext(it -> y.increment())
                                 .window(10, 1)
                                 .takeUntilOther(ruleStatusMono)
                                 .takeLast(1)
@@ -94,8 +120,8 @@ public class RuleProcessorService {
 
                         var combine = Flux.zip(ruleStatusMono, lastMsgMono);
 
-                        if (x.get() != y.get()) {
-                            log.error("evaluated msg counts {} != {} when evaluating two co-publishing fluxes", x.get(), y.get());
+                        if (x.sum() != y.sum()) {
+                            log.error("evaluated msg counts {} != {} when evaluating two co-publishing fluxes", x.sum(), y.sum());
                         }
 
                         return combine;

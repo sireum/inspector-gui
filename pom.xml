@@ -6,22 +6,22 @@
     <packaging>jar</packaging>
 
     <parent>
-        <groupId>com.github.MatthewWeisCaps</groupId>
+        <groupId>org.sireum.hamr</groupId>
         <artifactId>inspector-bom</artifactId>
-        <version>0.2-SNAPSHOT</version>
+        <version>0.5-SNAPSHOT</version>
     </parent>
 
     <groupId>org.sireum.hamr.inspector</groupId>
     <artifactId>inspector-gui</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.5-SNAPSHOT</version>
     <name>inspector-gui</name>
     <description>Inspector GUI</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>11</java.version>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <java.version>14</java.version>
+        <maven.compiler.source>14</maven.compiler.source>
+        <maven.compiler.target>14</maven.compiler.target>
     </properties>
 
     <repositories>
@@ -33,6 +33,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.sireum.hooks</groupId>
+            <artifactId>virtual-reactor-hooks</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.sireum.runtime</groupId>
             <artifactId>library_2.12</artifactId>
         </dependency>
@@ -40,21 +45,17 @@
             <groupId>org.sireum.slang-embedded-art</groupId>
             <artifactId>slang-embedded-art_2.12</artifactId>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.sireum.hamr</groupId>-->
+<!--            <artifactId>inspector-stream</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.sireum.hamr</groupId>-->
+<!--            <artifactId>inspector-common</artifactId>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>com.github.MatthewWeisCaps</groupId>
-            <artifactId>inspector-stream</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.MatthewWeisCaps</groupId>
-            <artifactId>inspector-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.MatthewWeisCaps</groupId>
+            <groupId>org.sireum.hamr</groupId>
             <artifactId>inspector-services</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.MatthewWeisCaps</groupId>
-            <artifactId>inspector-services-redis</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
@@ -63,27 +64,27 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-base</artifactId>
-            <version>13</version>
+            <version>14</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>13</version>
+            <version>14</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>13</version>
+            <version>14</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-web</artifactId>
-            <version>13</version>
+            <version>14</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-media</artifactId>
-            <version>13</version>
+            <version>14</version>
         </dependency>
         <!-- would be runtime scope but want access to GlyphIcons class -->
         <dependency>
@@ -114,11 +115,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.github.shadskii</groupId>
-            <artifactId>reactorfx</artifactId>
-            <version>2.0.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.fxmisc.easybind</groupId>
             <artifactId>easybind</artifactId>
             <version>1.0.3</version>
@@ -128,74 +124,127 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.junit.jupiter</groupId>-->
+<!--            <artifactId>junit-jupiter-api</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.junit.jupiter</groupId>-->
+<!--            <artifactId>junit-jupiter-engine</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.junit.platform</groupId>-->
+<!--            <artifactId>junit-platform-launcher</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.junit.platform</groupId>-->
+<!--            <artifactId>junit-platform-engine</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.junit.platform</groupId>-->
+<!--            <artifactId>junit-platform-runner</artifactId>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.qameta.allure</groupId>-->
+<!--            <artifactId>allure-junit5</artifactId>-->
+<!--            <version>2.13.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>io.qameta.allure</groupId>-->
+<!--            <artifactId>allure-plugin-api</artifactId>-->
+<!--            <version>2.13.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.junit.platform</groupId>-->
+<!--            <artifactId>junit-platform-surefire-provider</artifactId>-->
+<!--            <version>1.3.2</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.apiguardian</groupId>-->
+<!--                    <artifactId>apiguardian-api</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>io.qameta.allure</groupId>-->
+<!--            <artifactId>allure-generator</artifactId>-->
+<!--            <version>2.13.0</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>io.qameta.allure</groupId>-->
+<!--                    <artifactId>allure-model</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>io.qameta.allure.plugins</groupId>-->
+<!--            <artifactId>junit-xml-plugin</artifactId>-->
+<!--            <version>2.13.0</version>-->
+<!--        </dependency>-->
+
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
+            <version>5.6.0</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.6.0</version>
         </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
+            <version>1.5.2</version>
         </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-engine</artifactId>
+            <version>1.5.2</version>
         </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-runner</artifactId>
+            <version>1.5.2</version>
         </dependency>
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-junit5</artifactId>
-            <version>2.13.0</version>
+            <version>2.13.2</version>
         </dependency>
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-plugin-api</artifactId>
-            <version>2.13.0</version>
+            <version>2.13.2</version>
         </dependency>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>1.3.2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apiguardian</groupId>
-                    <artifactId>apiguardian-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.junit.platform</groupId>-->
+<!--            <artifactId>junit-platform-surefire-provider</artifactId>-->
+<!--            <version>1.3.2</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-generator</artifactId>
-            <version>2.13.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.qameta.allure</groupId>
-                    <artifactId>allure-model</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>2.13.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-java-commons-test</artifactId>
+            <version>2.13.2</version>
         </dependency>
         <dependency>
             <groupId>io.qameta.allure.plugins</groupId>
             <artifactId>junit-xml-plugin</artifactId>
-            <version>2.13.0</version>
+            <version>2.13.2</version>
         </dependency>
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -209,6 +258,17 @@
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
+            <version>2.12.10</version> <!-- todo which one? parent i assume -->
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.projectreactor</groupId>
+                    <artifactId>reactor-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -294,12 +354,12 @@
                                         <exclude>org.openjfx</exclude>
                                     </excludes>
                                     <includes>
-                                        <include>org.openjfx:javafx-base:13</include>
-                                        <include>org.openjfx:javafx-graphics:13</include>
-                                        <include>org.openjfx:javafx-controls:13</include>
-                                        <include>org.openjfx:javafx-fxml:13</include>
-                                        <include>org.openjfx:javafx-media:13</include>
-                                        <include>org.openjfx:javafx-web:13</include>
+                                        <include>org.openjfx:javafx-base:14</include>
+                                        <include>org.openjfx:javafx-graphics:14</include>
+                                        <include>org.openjfx:javafx-controls:14</include>
+                                        <include>org.openjfx:javafx-fxml:14</include>
+                                        <include>org.openjfx:javafx-media:14</include>
+                                        <include>org.openjfx:javafx-web:14</include>
                                     </includes>
                                     <message>javafx dependency must come from inspector pom (not transitively from workbenchfx)</message>
                                     <searchTransitive>true</searchTransitive>
@@ -308,6 +368,18 @@
                             <fail>true</fail>
                             <failFast>true</failFast>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

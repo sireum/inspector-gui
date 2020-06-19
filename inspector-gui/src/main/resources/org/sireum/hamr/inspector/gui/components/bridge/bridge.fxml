@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.sireum.hamr.inspector.gui.components.bridge.BridgeComponent"
+            prefHeight="-Infinity"
+            prefWidth="-Infinity"
+            fx:id="root"
+            border="${controller.outermostBorder}">
+<!--    <left>-->
+<!--        <HBox border="${controller.innerBorder}">-->
+<!--            <VBox fx:id="globalIn"/>-->
+<!--            <VBox fx:id="localIn"/>-->
+<!--        </HBox>-->
+<!--    </left>-->
+    <top>
+        <Label fx:id="bridgeName"/>
+    </top>
+    <center>
+        <HBox border="${controller.outermostBorder}">
+            <VBox fx:id="globalIn"/>
+
+            <HBox border="${controller.innerBorder}">
+                <VBox fx:id="localIn"/>
+                <VBox fx:id="localOut"/>
+            </HBox>
+<!--        </HBox>-->
+<!--        <HBox border="${controller.innerBorder}">-->
+<!--            <VBox fx:id="localOut"/>-->
+            <VBox fx:id="globalOut"/>
+        </HBox>
+    </center>
+<!--    <bottom>-->
+<!--        -->
+<!--    </bottom>-->
+<!--    <right>-->
+<!--        <HBox border="${controller.innerBorder}">-->
+<!--            <VBox fx:id="localOut"/>-->
+<!--            <VBox fx:id="globalOut"/>-->
+<!--        </HBox>-->
+<!--    </right>-->
+</BorderPane>
