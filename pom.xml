@@ -11,7 +11,7 @@
         <version>0.5-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.sireum.hamr.inspector</groupId>
+    <groupId>org.sireum.hamr</groupId>
     <artifactId>inspector-gui</artifactId>
     <version>0.5-SNAPSHOT</version>
     <name>inspector-gui</name>
