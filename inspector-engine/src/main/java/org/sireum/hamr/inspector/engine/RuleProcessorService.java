@@ -42,6 +42,9 @@ import org.sireum.hamr.inspector.gui.ThreadedOn;
 import org.sireum.hamr.inspector.services.MsgService;
 import org.sireum.hamr.inspector.services.RuleStatus;
 import org.sireum.hamr.inspector.services.Session;
+import org.sireum.hamr.inspector.services.SessionService;
+import org.sireum.hooks.TimeBarriers;
+import org.sireum.hooks.TimeUtils;
 import org.springframework.data.domain.Range;
 import org.springframework.stereotype.Controller;
 import reactor.core.Disposable;
@@ -61,12 +64,16 @@ import java.util.function.Function;
 public class RuleProcessorService {
 
     private final MsgService msgService;
+    private final SessionService sessionService;
     private final ArtUtils artUtils;
 
-    public RuleProcessorService(MsgService msgService, ArtUtils artUtils) {
+    public RuleProcessorService(MsgService msgService, SessionService sessionService, ArtUtils artUtils) {
         this.msgService = msgService;
+        this.sessionService = sessionService;
         this.artUtils = artUtils;
     }
+
+    private static final int HISTORY_SIZE = 10;
 
     private LoadingCache<Tuple2<Session, Rule>, ObservableObjectValue<RuleStatus>> CACHE;
 
@@ -99,33 +106,26 @@ public class RuleProcessorService {
 
             final Mono<RuleStatus> resultMono = msgService.live(session, Range.unbounded())
                     .publish(msgFlux -> {
-                        final LongAdder x = new LongAdder();
-                        final LongAdder y = new LongAdder();
-                        final Mono<RuleStatus> ruleStatusMono = msgFlux
-                                .doOnNext(it -> x.increment())
-                                .transformDeferred(flux -> rule.rule(org.sireum.hamr.inspector.stream.Flux.from(flux)))
-                                .materialize()
-                                .transform(HANDLE_LAST_SIGNAL)
-                                .takeLast(1)
-                                .single();
 
-                        // the publish method forces both fluxes to run in lockstep todo fix
+                        // technically can count past -- but impossible to know since rule is a black box anyways
+                        // (this just means its hard to tell exactly where a rule triggered for viewing, but a
+                        //  filter or manual per-rule tracker can be used if this is needed)
+                        final LongAdder count = new LongAdder();
+
+                        final Mono<RuleStatus> ruleStatusMono = HANDLE_LAST_SIGNAL.apply(msgFlux
+                            .map(msg -> TimeUtils.attachTimestamp(msg.timestamp(), msg))
+                            .transform(TimeBarriers::ENTER_VIRTUAL_TIME)
+                            .transformDeferred(flux -> flux.doOnNext(msg -> count.increment())
+                                    .publish(lockStep -> rule.rule(org.sireum.hamr.inspector.stream.Flux.from(lockStep)))
+                                    .materialize()))
+                                .transform(TimeBarriers::EXIT_VIRTUAL_TIME);
+
                         final Mono<List<Msg>> lastMsgMono = msgFlux
-                                .doOnNext(it -> y.increment())
-                                .window(10, 1)
                                 .takeUntilOther(ruleStatusMono)
-                                .takeLast(1)
-                                .single()
-                                .flatMap(Flux::collectList);
+                                .takeLast(10)
+                                .collectList();
 
-                        var combine = Flux.zip(ruleStatusMono, lastMsgMono);
-
-                        if (x.sum() != y.sum()) {
-                            log.error("evaluated msg counts {} != {} when evaluating two co-publishing fluxes", x.sum(), y.sum());
-                        }
-
-                        return combine;
-
+                        return Flux.zip(ruleStatusMono, lastMsgMono);
                     })
                     .single()
                     .doOnNext(t -> Platform.runLater(() -> {

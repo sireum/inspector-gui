@@ -31,6 +31,16 @@ import org.sireum.hamr.inspector.common.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
+import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
+import org.springframework.boot.autoconfigure.context.ConfigurationPropertiesAutoConfiguration;
+import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration;
+import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
+import org.springframework.boot.autoconfigure.info.ProjectInfoAutoConfiguration;
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
+import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
+import org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -46,23 +56,22 @@ import static javafx.collections.FXCollections.unmodifiableObservableList;
 @Slf4j
 //@SpringBootApplication
 @SpringBootConfiguration
-//@EnableAutoConfiguration(exclude = {
-//        TaskExecutionAutoConfiguration.class,
-//        CacheAutoConfiguration.class,
-////        LocalDevToolsAutoConfiguration.class,
-//        ProjectInfoAutoConfiguration.class,
-//        AopAutoConfiguration.class,
-//        TaskExecutionAutoConfiguration.class,
-////        DevToolsDataSourceAutoConfiguration.class,
-//        PropertyPlaceholderAutoConfiguration.class,
-//        TaskSchedulingAutoConfiguration.class,
-//        MessageSourceAutoConfiguration.class,
-//        JacksonAutoConfiguration.class,
-//        ConfigurationPropertiesAutoConfiguration.class, // todo exclude?
-//        CacheAutoConfiguration.class,
-//        FreeMarkerAutoConfiguration.class,
-//})
-@EnableAutoConfiguration // todo want to have this for deps?
+@EnableAutoConfiguration(exclude = {
+        TaskExecutionAutoConfiguration.class,
+        CacheAutoConfiguration.class,
+//        LocalDevToolsAutoConfiguration.class,
+        ProjectInfoAutoConfiguration.class,
+        AopAutoConfiguration.class,
+        TaskExecutionAutoConfiguration.class,
+//        DevToolsDataSourceAutoConfiguration.class,
+        PropertyPlaceholderAutoConfiguration.class,
+        TaskSchedulingAutoConfiguration.class,
+        MessageSourceAutoConfiguration.class,
+        JacksonAutoConfiguration.class,
+        ConfigurationPropertiesAutoConfiguration.class, // todo exclude?
+        CacheAutoConfiguration.class,
+        FreeMarkerAutoConfiguration.class,
+})
 @ComponentScan(basePackages = {
         // at this point the InspectorBlueprint which provides the target hamr project has already been discovered
         "org.sireum.hamr.inspector.common",         // then apply to common for ArtUtils

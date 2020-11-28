@@ -63,14 +63,13 @@ public final class AppLoader {
      * Lazily called by appNode() or appRoot() beans when initialized.
      */
     private void loadRootIfNull() {
-        final boolean isLoaded = isRootLoaded.getAcquire();
-        if (!isLoaded) {
+        final boolean isNotLoaded = isRootLoaded.compareAndSet(false, true);
+        if (isNotLoaded) {
             final var tuple = loadNodeReturnAll("appnode", AppNode.class);
             rootNode = (Parent) tuple.getT1();
             final var loader = tuple.getT2();
             appNode = loader.getController();
         }
-        isRootLoaded.setRelease(true);
     }
 
     @NotNull
@@ -141,7 +140,7 @@ public final class AppLoader {
             return Tuples.of(node, loader, controller[0]);
         } catch (IOException e) {
             log.error("Unable to load view {} fxml for class {}. {}", viewName, nodeClass.getSimpleName(), e);
-            // todo make this instead return special "unable to load" label node
+            // todo make this instead return special "unable to load" label node instead of throwing error
             throw new RuntimeException("Unable to load view {} fxml.");
         }
     }

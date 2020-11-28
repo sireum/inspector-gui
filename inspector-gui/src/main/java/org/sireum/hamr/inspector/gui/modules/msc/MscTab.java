@@ -28,6 +28,7 @@ package org.sireum.hamr.inspector.gui.modules.msc;
 import art.Bridge;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -43,7 +44,8 @@ import org.sireum.hamr.inspector.common.ArtUtils;
 import org.sireum.hamr.inspector.common.Filter;
 import org.sireum.hamr.inspector.common.Msg;
 import org.sireum.hamr.inspector.gui.ViewController;
-import org.sireum.hamr.inspector.gui.collections.UnbackedObservableList;
+import org.sireum.hamr.inspector.gui.collections.UnbackedLinearAccessObservableList;
+import org.sireum.hamr.inspector.gui.components.IndexTableCell;
 import org.sireum.hamr.inspector.gui.components.msc.MscTableCell;
 import org.sireum.hamr.inspector.gui.gfx.Coloring;
 import org.sireum.hamr.inspector.gui.modules.DisposableTabController;
@@ -102,14 +104,6 @@ public final class MscTab implements DisposableTabController {
 
     private final AtomicReference<Disposable> streamDisposable = new AtomicReference<>(null);
 
-//    private final ChangeListener<Disposable> subscriptionChangeListener = (observable, oldValue, newValue) -> {
-//        tableView.getItems().clear();
-//        if (oldValue != null && !oldValue.isDisposed()) {
-//            oldValue.dispose();
-//        }
-//        streamDisposable.getAndSet(newValue);
-//    };
-
     @SuppressWarnings("FieldCanBeLocal") // this property MUST be a field to avoid being GC'd as a weak reference
     private ObjectBinding<ObservableList<Msg>> itemsBinding = null;
 
@@ -131,6 +125,8 @@ public final class MscTab implements DisposableTabController {
     }
 
     private void initTableStructure() {
+
+        insertIndexTableColumn();
         for (Bridge bridge : artUtils.getBridges()) {
             final var column = new TableColumn<Msg, Msg>(artUtils.prettyPrint(bridge));
 
@@ -159,13 +155,33 @@ public final class MscTab implements DisposableTabController {
         tableView.setSelectionModel(null);
     }
 
+    private void insertIndexTableColumn() {
+        final var column = new TableColumn<Msg, Long>("Index");
+
+        column.setCellValueFactory(data -> new SimpleLongProperty(data.getValue().sequence()).asObject());
+        column.setCellFactory(col -> new IndexTableCell());
+        column.setPrefWidth(28.0);
+
+        column.setResizable(true);
+        column.setReorderable(true);
+        column.setEditable(false);
+
+        column.setStyle("-bridge-color: transparent;");
+
+        // if this is changed, must also remove the line: tableView.setSelectionModel(null) below.
+        // see: https://stackoverflow.com/questions/27354085/disable-row-selection-in-tableview
+        column.setSortable(false);
+
+        tableView.getColumns().add(column);
+    }
+
     private void initTableContent() {
         itemsBinding = Bindings.createObjectBinding(() -> {
             final Session session = sessionComboBox.getValue();
             final Filter filter = filterComboBox.getValue();
 
             if (session != null && filter != null) {
-                return new UnbackedObservableList(artUtils, msgService, session, filter);
+                return new UnbackedLinearAccessObservableList(artUtils, msgService, session, filter);
             } else {
                 return FXCollections.emptyObservableList();
             }

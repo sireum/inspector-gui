@@ -27,6 +27,7 @@ package org.sireum.hamr.inspector.gui.components.msc;
 
 import art.Bridge;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -39,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.sireum.hamr.inspector.common.ArtUtils;
 import org.sireum.hamr.inspector.common.Msg;
 import org.sireum.hamr.inspector.gui.ViewController;
+import org.sireum.hamr.inspector.gui.components.IndexTableCell;
 import org.sireum.hamr.inspector.gui.gfx.Coloring;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -65,20 +67,8 @@ public final class Msc {
     @Getter
     private final double rowHeight = ROW_HEIGHT; // accessed by msc.fxml
 
-//    @Getter
-//    @Autowired
-//    @Qualifier("filters")
-//    private ObservableList<Filter> filters;
-
-//    @Autowired
-//    @Qualifier("msgService")
-//    private MsgService msgService;
-
     @FXML
     private TableView<Msg> tableView;
-
-//    @FXML
-//    public ComboBox<Filter> filterComboBox;
 
     public ObservableList<Msg> getItems() {
         return tableView.getItems();
@@ -97,19 +87,8 @@ public final class Msc {
         initTableStructure();
     }
 
-    // todo needed? bad for service?
-//    @Override
-//    public void dispose() {
-//        streamDisposable.updateAndGet(disposable -> {
-//            if (disposable != null && !disposable.isDisposed()) {
-//                log.info("disposing of mscTab's stream subscription");
-//                disposable.dispose();
-//            }
-//            return null;
-//        });
-//    }
-
     private void initTableStructure() {
+        insertIndexTableColumn();
         for (Bridge bridge : artUtils.getBridges()) {
             final var column = new TableColumn<Msg, Msg>(artUtils.prettyPrint(bridge));
 
@@ -136,6 +115,26 @@ public final class Msc {
         // this can cause NPE if table is sorted, but column.setSortable(false) is called for each column
         // if sorting is needed, use css from: https://stackoverflow.com/questions/27354085/disable-row-selection-in-tableview
         tableView.setSelectionModel(null);
+    }
+
+    private void insertIndexTableColumn() {
+        final var column = new TableColumn<Msg, Long>("Index");
+
+        column.setCellValueFactory(data -> new SimpleLongProperty(data.getValue().sequence()).asObject());
+        column.setCellFactory(col -> new IndexTableCell());
+        column.setPrefWidth(28.0);
+
+        column.setResizable(true);
+        column.setReorderable(true);
+        column.setEditable(false);
+
+        column.setStyle("-bridge-color: transparent;");
+
+        // if this is changed, must also remove the line: tableView.setSelectionModel(null) below.
+        // see: https://stackoverflow.com/questions/27354085/disable-row-selection-in-tableview
+        column.setSortable(false);
+
+        tableView.getColumns().add(column);
     }
 
 }

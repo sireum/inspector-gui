@@ -91,8 +91,8 @@ public class MscTableCell extends TableCell<Msg, Msg> {
         if (empty || item == null) {
             setGraphic(null);
         } else {
-            final CellType cellType = determineCellType(item);
-            setGraphicToCellType(item, cellType);
+            final CellType cellType = determineCellType(item); // sets areSourceAndDestAdjacentCallback
+            setGraphicToCellType(item, cellType); // uses areSourceAndDestAdjacentCallback
         }
     }
 

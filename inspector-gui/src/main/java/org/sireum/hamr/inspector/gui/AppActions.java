@@ -61,7 +61,7 @@ import java.util.Optional;
 
 @Lazy
 @Slf4j
-//@Import({AppDiscovery.class, ServiceBeans.class})
+//@Import({AppDiscovery.class, ServiceBeans.class}) // unneeded with current setup order
 @Configuration
 public class AppActions {
 
@@ -148,48 +148,6 @@ public class AppActions {
         return new Action("New Rules Tab", event -> appLoader.loadAndInsertTab("rules", RulesTab.class));
     }
 
-//    /**
-//     *
-//     * Contract - any item that triggers this action should set their userData equal to the target tab
-//     *
-//     * @return
-//     */
-//    @Lazy @Bean(name = "splitTabVerticallyAction")
-//    public Action splitTabVerticallyAction() {
-//        return new Action("Split Vertically", event -> {
-//            if (event.getTarget() instanceof Node) {
-//                final Node node = (Node) event.getTarget();
-//                if (node.getUserData() instanceof Tab) {
-//                    final Tab tab = (Tab) node.getUserData();
-//                    final TabPane tabPane = tab.getTabPane();
-//
-//                    if (tabPane != null && tabPane.getTabs().contains(tab)) {
-//                        final Parent parent = tabPane.getParent();
-//
-//                        tabPane.getTabs().remove(tab);
-////                        parent.getChildrenUnmodifiable()
-//                    }
-//                } else {
-//                    log.warn("splitTabVerticallyAction requires that target nodes set userData to the target tab.");
-//                }
-//            }
-//            System.out.println(event); // todo write after debugging
-//        });
-//    }
-//
-//    /**
-//     *
-//     * Contract - any item that triggers this action should set their userData equal to the target tab
-//     *
-//     * @return
-//     */
-//    @Lazy @Bean(name = "splitTabHorizontallyAction")
-//    public Action splitTabHorizontallyAction() {
-//        return new Action("Split Horizontally", event -> {
-//            System.out.println(event); // todo write after debugging
-//        });
-//    }
-
     @Lazy @Bean(name = "generateTestReportAction")
     public Action generateTestReportAction() {
         return new Action("Generate Test Report", event -> {
@@ -213,7 +171,7 @@ public class AppActions {
                     .owner(appLoader.getRootNode())
                     .show();
 
-            Schedulers.elastic().schedule(task);
+            Schedulers.boundedElastic().schedule(task);
             appLoader.getAppNode().taskProgressView.getTasks().add(task);
         });
     }

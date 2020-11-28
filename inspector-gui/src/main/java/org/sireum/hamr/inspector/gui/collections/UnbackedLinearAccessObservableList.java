@@ -59,7 +59,7 @@ import java.util.Objects;
  * asynchronously.
  *
  */
-public class UnbackedObservableList extends ReadOnlyUnbackedObservableList<Msg> {
+public class UnbackedLinearAccessObservableList extends ReadOnlyUnbackedObservableList<Msg> {
 
     @NotNull
     private final ArtUtils artUtils;
@@ -74,7 +74,7 @@ public class UnbackedObservableList extends ReadOnlyUnbackedObservableList<Msg> 
     private final Filter filter;
 
     @ThreadedOn(threadName = "fx")
-    final CircularBuffer<Msg> backingBuffer;
+    final CircularNonSequentialGrowthBuffer<Msg> backingBuffer;
 
     @ThreadedOn(threadName = "fx")
     private int count = 0;
@@ -103,32 +103,25 @@ public class UnbackedObservableList extends ReadOnlyUnbackedObservableList<Msg> 
     final Disposable[] buffersCorrespondingMaybeDisposable = new Disposable[numBackbuffers];
 
     @ThreadedOn(threadName = "fx")
-    final CircularBuffer<Msg> liveBuffer = new CircularBuffer<>(new Msg[backingArraySize]);
+    final CircularNonSequentialGrowthBuffer<Msg> liveBuffer = new CircularNonSequentialGrowthBuffer<>(new Msg[backingArraySize]);
 
     @ThreadedOn(threadName = "fx")
     private int lastIndex = -1; // initial -1 case is handled by bufferBoundaryCrossed
 
     private final Disposable counter;
 
-    public UnbackedObservableList(@NotNull ArtUtils artUtils,
-                                  @NotNull MsgService msgService,
-                                  @NotNull Session session,
-                                  @NotNull Filter filter) {
+    public UnbackedLinearAccessObservableList(@NotNull ArtUtils artUtils,
+                                              @NotNull MsgService msgService,
+                                              @NotNull Session session,
+                                              @NotNull Filter filter) {
         this.artUtils = artUtils;
         this.msgService = msgService;
         this.session = session;
         this.filter = filter;
 
-        backingBuffer = new CircularBuffer<>(new Msg[backingArraySize]);
+        backingBuffer = new CircularNonSequentialGrowthBuffer<>(new Msg[backingArraySize]);
 
-        filteredMsgs = msgService.live(session, Range.unbounded())
-                .limitRate(backingArraySize, backingArraySize)
-                .onBackpressureBuffer(backingArraySize, BufferOverflowStrategy.ERROR)
-                .map(msg -> TimeUtils.attachTimestamp(msg.timestamp(), msg))
-                .publishOn(Schedulers.elastic())
-                .transform(TimeBarriers::ENTER_VIRTUAL_TIME)
-                .transform(in -> filter.filter(Flux.from(in)))
-                .transform(TimeBarriers::EXIT_VIRTUAL_TIME);
+        filteredMsgs = virtualFilterLimitRate(msgService.live(session, Range.unbounded()), backingArraySize, filter);
 
         counter = filteredMsgs
                 .index()
@@ -236,13 +229,8 @@ public class UnbackedObservableList extends ReadOnlyUnbackedObservableList<Msg> 
                 if (nextBufferGlobalIndex >= 0 && buffersCorrespondingGlobalIndex[nextBufferLocalIndex] != nextBufferGlobalIndex) {
                     buffersCorrespondingGlobalIndex[nextBufferLocalIndex] = nextBufferGlobalIndex;
                     final Disposable d = msgService.replay(session, Range.unbounded())
-                            .limitRate(backingArraySize, backingArraySize) // overkill for replay?
-                            .onBackpressureBuffer(backingArraySize, BufferOverflowStrategy.ERROR) // overkill for replay?
-                            .map(msg -> TimeUtils.attachTimestamp(msg.timestamp(), msg))
-                            .publishOn(Schedulers.elastic())
-                            .transform(TimeBarriers::ENTER_VIRTUAL_TIME)
-                            .transform(flux -> filter.filter(Flux.from(flux)))
-                            .transform(TimeBarriers::EXIT_VIRTUAL_TIME)
+                            // todo overkill for replay? (the rate limiting and backpressure buffering?)s
+                            .transform(flux -> virtualFilterLimitRate(flux, backingArraySize, filter))
                             .skip(globalBufferToStartIndex(nextBufferGlobalIndex))
                             .take(backingArraySize)
                             .collectList()
@@ -290,13 +278,7 @@ public class UnbackedObservableList extends ReadOnlyUnbackedObservableList<Msg> 
         }
 
         final reactor.core.publisher.Mono<List<Msg>> serviceQuery = msgService.replay(session, Range.unbounded())
-                .limitRate(backingArraySize, backingArraySize) // overkill for replay?
-                .onBackpressureBuffer(backingArraySize, BufferOverflowStrategy.ERROR) // overkill for replay?
-                .map(msg -> TimeUtils.attachTimestamp(msg.timestamp(), msg))
-                .publishOn(Schedulers.elastic())
-                .transform(TimeBarriers::ENTER_VIRTUAL_TIME)
-                .transform(flux -> filter.filter(Flux.from(flux)))
-                .transform(TimeBarriers::EXIT_VIRTUAL_TIME)
+                .transform(flux -> virtualFilterLimitRate(flux, backingArraySize, filter))
                 .skip(globalBufferToStartIndex(bufferGlobalIndex))
                 .take(backingArraySize)
                 .collectList();
@@ -312,15 +294,27 @@ public class UnbackedObservableList extends ReadOnlyUnbackedObservableList<Msg> 
         return count;
     }
 
+    private static reactor.core.publisher.Flux<Msg> virtualFilterLimitRate(reactor.core.publisher.Flux<Msg> flux, int backingArraySize, Filter filter) {
+        return flux
+                .limitRate(backingArraySize, backingArraySize) // overkill for replay?
+                .onBackpressureBuffer(backingArraySize, BufferOverflowStrategy.ERROR) // overkill for replay?
+                .map(msg -> TimeUtils.attachTimestamp(msg.timestamp(), msg))
+                .publishOn(Schedulers.elastic())
+                .transform(TimeBarriers::ENTER_VIRTUAL_TIME)
+                .transformDeferred(it -> it.publish(lockStep -> filter.filter(Flux.from(lockStep))))
+                .transform(TimeBarriers::EXIT_VIRTUAL_TIME);
+    }
+
     // only allows for growth
-    private static class CircularBuffer<T> {
+    // non-sequential because one can "jump" ahead an index, at the cost of becoming the new head+tail`
+    private static class CircularNonSequentialGrowthBuffer<T> {
 
         int next = 0;
         int tailCutoff = -1;
 
         private final T[] backingArray;
 
-        private CircularBuffer(T[] backingArray) {
+        private CircularNonSequentialGrowthBuffer(T[] backingArray) {
             this.backingArray = backingArray;
         }
 

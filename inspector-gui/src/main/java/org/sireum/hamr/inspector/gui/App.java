@@ -35,7 +35,8 @@ import org.sireum.hamr.inspector.common.Filter;
 import org.sireum.hamr.inspector.common.Injection;
 import org.sireum.hamr.inspector.common.InspectionBlueprint;
 import org.sireum.hamr.inspector.common.Rule;
-import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.Objects;
@@ -43,10 +44,6 @@ import java.util.Set;
 
 @Slf4j
 @NoArgsConstructor
-//@SpringBootApplication
-//// can filter out AppDiscovery and ServiceBeans because they are imported by AppActions
-//@ComponentScan(basePackages = { "org.sireum.hamr.inspector" },
-//        excludeFilters = { @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = { AppDiscovery.class, ServiceBeans.class}) })
 public class App extends Application {
 
     public static final float COLOR_SCHEME_HUE_OFFSET = 0.05f;
@@ -54,7 +51,6 @@ public class App extends Application {
     public static final float COLOR_SCHEME_BRIGHTNESS = 0.65f;
 
     // set by InspectorApplication before init()
-//    static volatile Class<?> inspectorBlueprintConfiguration = null;
     static volatile InspectionBlueprint inspectionBlueprint = null;
     static volatile Set<Filter> filters = null;
     static volatile Set<Rule> rules = null;
@@ -66,7 +62,6 @@ public class App extends Application {
 
     @Override
     public void init() throws Exception {
-//        Objects.requireNonNull(inspectorBlueprintConfiguration, "Configuration must be set before launching");
         Objects.requireNonNull(inspectionBlueprint, "inspectionBlueprint must be set before launching");
         Objects.requireNonNull(filters, "filtersSeq must be set before launching");
         Objects.requireNonNull(rules, "rulesSeq must be set before launching");
@@ -76,8 +71,11 @@ public class App extends Application {
         log.info("javafx.runtime.version: {}", System.getProperties().get("javafx.runtime.version"));
 
         final var configurationClasses = new Class<?>[] { AppDiscovery.class };
-        applicationContext = SpringApplication.run(configurationClasses, args);
-        applicationContext.registerShutdownHook();
+        applicationContext = new SpringApplicationBuilder(configurationClasses)
+                .headless(false)
+                .web(WebApplicationType.NONE)
+                .registerShutdownHook(true)
+                .run(args);
     }
 
     @Override

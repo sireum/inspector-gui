@@ -46,7 +46,7 @@ import org.sireum.hamr.inspector.common.ArtUtils;
 import org.sireum.hamr.inspector.common.Filter;
 import org.sireum.hamr.inspector.common.Msg;
 import org.sireum.hamr.inspector.gui.ViewController;
-import org.sireum.hamr.inspector.gui.collections.UnbackedObservableList;
+import org.sireum.hamr.inspector.gui.collections.UnbackedLinearAccessObservableList;
 import org.sireum.hamr.inspector.gui.components.*;
 import org.sireum.hamr.inspector.gui.gfx.Coloring;
 import org.sireum.hamr.inspector.gui.modules.DisposableTabController;
@@ -196,7 +196,7 @@ public final class ConsoleTab implements DisposableTabController {
             final Filter filter = filterComboBox.getValue();
 
             if (session != null && filter != null) {
-                return new UnbackedObservableList(artUtils, msgService, session, filter);
+                return new UnbackedLinearAccessObservableList(artUtils, msgService, session, filter);
             } else {
                 return FXCollections.emptyObservableList();
             }

@@ -40,8 +40,8 @@ import org.controlsfx.control.TaskProgressView;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.control.action.ActionUtils;
 import org.jetbrains.annotations.NotNull;
+import org.sireum.docktabfx.DockablePane;
 import org.sireum.hamr.inspector.common.ArtUtils;
-import org.sireum.hamr.inspector.gui.components.DockableTabPane;
 import org.sireum.hamr.inspector.gui.gfx.Coloring;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -88,7 +88,7 @@ public class AppNode {
     private Action runInjectionAction;
 
     @FXML
-    public DockableTabPane rootTabPane;
+    public DockablePane rootTabPane;
 
     @FXML
     public MenuItem newArchTabMenuItem;
@@ -131,8 +131,8 @@ public class AppNode {
         ActionUtils.configureMenuItem(consoleTabAction, newTableTabMenuItem);
         ActionUtils.configureMenuItem(mscTabAction, newMscTabMenuItem);
         ActionUtils.configureMenuItem(rulesTabAction, newRulesTabMenuItem);
-        // todo hide until save dialog and stability check
-//        ActionUtils.configureMenuItem(generateTestReportAction, generateReportMenuItem);
+        // todo hide add unstable / "beta" warning?
+        ActionUtils.configureMenuItem(generateTestReportAction, generateReportMenuItem);
         ActionUtils.configureMenuItem(runInjectionAction, runInjectionMenuItem);
     }
 

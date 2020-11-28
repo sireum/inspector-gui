@@ -8,12 +8,13 @@
     <parent>
         <groupId>org.sireum</groupId>
         <artifactId>inspector-bom</artifactId>
-        <version>0.5-SNAPSHOT</version>
+        <version>0.6-SNAPSHOT</version>
+        <relativePath>../inspector-bom</relativePath>
     </parent>
 
-    <groupId>org.sireum.hamr</groupId>
+    <groupId>org.sireum</groupId>
     <artifactId>inspector-gui</artifactId>
-    <version>0.5-SNAPSHOT</version>
+    <version>0.6-SNAPSHOT</version>
     <name>inspector-gui</name>
     <description>Inspector GUI</description>
 
@@ -33,18 +34,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.sireum</groupId>
-            <artifactId>virtual-reactor-hooks</artifactId>
+            <groupId>org.sireum.kekinian</groupId>
+            <artifactId>slang-embedded-art_2.13</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.sireum.runtime</groupId>
-            <artifactId>library_2.12</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.sireum.slang-embedded-art</groupId>
-            <artifactId>slang-embedded-art_2.12</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.sireum</groupId>
             <artifactId>inspector-services</artifactId>
@@ -77,6 +69,11 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-media</artifactId>
             <version>14</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sireum</groupId>
+            <artifactId>dock-tab-fx</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <!-- would be runtime scope but want access to GlyphIcons class -->
         <dependency>
